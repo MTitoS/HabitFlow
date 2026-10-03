@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 3,
-  "state_name": "implementation",
+  "state": 4,
+  "state_name": "review",
   "phase": "A-mvp-baseline",
   "approved_gates": [
     {
@@ -26,5 +26,5 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-03T19:44:49.482Z"
+  "updated_at": "2026-10-03T20:20:12.176Z"
 }
