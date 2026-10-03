@@ -1,0 +1,24 @@
+{
+  "project": "habitflow",
+  "state": 1,
+  "state_name": "discovery",
+  "phase": "A-mvp-baseline",
+  "approved_gates": [],
+  "rug_retries_used": 0,
+  "max_retries": 5,
+  "open_questions": [
+    "skip weekly grant rule (semana-calendario vs 7d móvel) — isolado em ponto único do código",
+    "fórmula exact completion rate com skip — função única",
+    "posição botão + (FAB vs centro bottom nav)",
+    "gráficos finais Statistics",
+    "regras avançadas reminders (múltiplos horários x frequência)"
+  ],
+  "artifacts": {
+    "spec": "docs/SPEC.md",
+    "plan": "docs/PLAN.md",
+    "review": "docs/REVIEW.md",
+    "learnings": "docs/learnings.md"
+  },
+  "opencode_session": null,
+  "updated_at": null
+}
