@@ -1,13 +1,18 @@
 {
   "project": "habitflow",
-  "state": 4,
-  "state_name": "review",
+  "state": 5,
+  "state_name": "knowledge-capture",
   "phase": "A-mvp-baseline",
   "approved_gates": [
     {
       "state": 2,
       "approved_at": "2026-10-03T19:44:49.475Z",
       "note": "Tito aprovou PLAN 66 tasks 9 tiers"
+    },
+    {
+      "state": 4,
+      "approved_at": "2026-10-03T20:23:37.360Z",
+      "note": "Tito aprovou ship + APK"
     }
   ],
   "rug_retries_used": 0,
@@ -26,5 +31,5 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-03T20:20:12.176Z"
+  "updated_at": "2026-10-03T20:23:37.361Z"
 }
