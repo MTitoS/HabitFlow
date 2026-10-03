@@ -13,6 +13,7 @@ import { completionRate } from '@/domain/stats/completionRate';
 import { scheduledKeysInRange } from '@/domain/habit/isScheduled';
 import { addDays, daysInMonth, monthStartOf, todayKey } from '@/domain/date/dateUtils';
 import { quantitativeStats } from '@/domain/stats/quantitative';
+import { Sparkline } from '@/components/feature/habit-stats/Sparkline';
 import { EmptyState } from '@/components/feature/EmptyState';
 
 export default function HabitDetailScreen() {
@@ -100,6 +101,7 @@ export default function HabitDetailScreen() {
             <Metric label="Total" value={`${quant.total} ${quant.unit}`} />
             <Metric label="Meta batida" value={`${quant.daysGoalMet}/${quant.daysCompleted}`} />
           </View>
+          <Sparkline values={quant.series.map((point) => point.value)} max={habit.targetValue} />
         </View>
       ) : null}
     </AppScaffold>
