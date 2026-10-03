@@ -16,6 +16,24 @@ import { triggerSuccess } from '@/services/haptics';
 import { isOnboardingDone } from '@/services/prefs';
 import { useEffect, useState } from 'react';
 import { Habit } from '@/domain/habit/model';
+import { computeAchievements } from '@/hooks/useAchievements';
+import { DerivedStats } from '@/domain/stats/achievements';
+import { daySummary } from '@/domain/stats/aggregate';
+import { MilestoneCelebration } from '@/components/feature/MilestoneCelebration';
+import { CelebrationOverlay } from '@/components/feature/CelebrationOverlay';
+import { HabitRecord } from '@/domain/record/model';
+
+function buildDerivedStats(habits: Habit[], records: HabitRecord[], now: Date): DerivedStats {
+  const summary = daySummary(habits, records, now);
+  const totalCompletions = records.filter((r) => r.status === 'completed').length;
+  return {
+    currentStreak: summary.overallCurrentStreak,
+    bestStreak: summary.overallBestStreak,
+    totalCompletions,
+    scheduledToday: summary.scheduledToday,
+    completedToday: summary.completedToday,
+  };
+}
 
 export default function TodayScreen() {
   return <TodayBody />;
@@ -26,6 +44,9 @@ function TodayBody() {
   const { habits, records, routines, skipCredit, loading, error, repos, reload } = useData();
   const { showToast } = useToast();
   const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
+  const [celebration, setCelebration] = useState<
+    { kind: 'milestone'; titles: string[] } | { kind: 'all-done' } | null
+  >(null);
   const today = todayKey(new Date());
 
   useEffect(() => {
@@ -67,8 +88,25 @@ function TodayBody() {
       await repos.records.setCompleted(habit.id, todayKey(now), now);
       await triggerSuccess();
       showToast('success', `${habit.name} concluído`);
+      await maybeCelebrate(now);
     } catch {
       showToast('error', 'Não foi possível completar agora');
+    }
+  };
+
+  const maybeCelebrate = async (now: Date) => {
+    const activeHabits = habits.filter((h) => !h.archivedAt);
+    const scheduled = scheduledForDay(activeHabits, todayKey(now));
+    const doneToday = records.filter(
+      (r) => r.date === todayKey(now) && r.status === 'completed',
+    ).length;
+
+    const stats = buildDerivedStats(activeHabits, records, now);
+    const result = await computeAchievements(stats);
+    if (result.newlyEarned.length > 0) {
+      setCelebration({ kind: 'milestone', titles: result.newlyEarned.map((a) => a.title) });
+    } else if (scheduled.length > 0 && doneToday === scheduled.length) {
+      setCelebration({ kind: 'all-done' });
     }
   };
 
@@ -130,6 +168,16 @@ function TodayBody() {
       </View>
 
       <AddHabitButton />
+
+      <MilestoneCelebration
+        visible={celebration?.kind === 'milestone'}
+        titles={celebration?.kind === 'milestone' ? celebration.titles : []}
+        onClose={() => setCelebration(null)}
+      />
+      <CelebrationOverlay
+        visible={celebration?.kind === 'all-done'}
+        onClose={() => setCelebration(null)}
+      />
     </AppScaffold>
   );
 }
