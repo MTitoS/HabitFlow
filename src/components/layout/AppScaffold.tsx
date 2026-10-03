@@ -11,7 +11,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface Props {
   title: string;
-  children: ReactNode;
+  children?: ReactNode;
   actions?: ReactNode;
 }
 

@@ -7,17 +7,19 @@ import { useTheme } from '@/theme/Provider';
 import { scheduledKeysInRange } from '@/domain/habit/isScheduled';
 import { addDays, todayKey } from '@/domain/date/dateUtils';
 import { useEffect, useState } from 'react';
-import { isOnboardingDone } from '@/services/prefs';
+import { getHabitDefaults, isOnboardingDone, HabitDefaults } from '@/services/prefs';
 import { useToast } from '@/components/ui/Toast';
 
 export default function CreateHabitScreen() {
   const { repos, routines } = useData();
   const { showToast } = useToast();
   const [ready, setReady] = useState<boolean | null>(null);
+  const [defaults, setDefaults] = useState<HabitDefaults | null>(null);
   const theme = useTheme();
 
   useEffect(() => {
     isOnboardingDone().then(setReady);
+    getHabitDefaults().then(setDefaults);
   }, []);
 
   if (ready === null) {
@@ -45,7 +47,7 @@ export default function CreateHabitScreen() {
 
   return (
     <AppScaffold title="Novo hábito">
-      <HabitForm routineOptions={routineOptions} onSubmit={onSubmit} />
+      <HabitForm defaults={defaults ?? undefined} routineOptions={routineOptions} onSubmit={onSubmit} />
     </AppScaffold>
   );
 }

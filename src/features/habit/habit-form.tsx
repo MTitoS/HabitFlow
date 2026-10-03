@@ -7,7 +7,7 @@ import { Select } from '@/components/ui/forms/Select';
 import { ColorPicker } from '@/components/ui/forms/ColorPicker';
 import { Checkbox, Switch } from '@/components/ui/forms/Controls';
 import { TimePicker } from '@/components/ui/forms/TimePicker';
-import { Habit, HabitType, PredefinedUnit } from '@/domain/habit/model';
+import { Habit, HabitType, PredefinedUnit, FrequencyKind } from '@/domain/habit/model';
 import { ColorToken } from '@/theme/types';
 import { validateHabit } from '@/domain/habit/validateHabit';
 import { WEEKDAY_KEYS, WEEKDAY_LABELS, Weekday } from '@/domain/date/dateUtils';
@@ -30,23 +30,28 @@ const UNITS: PredefinedUnit[] = [
 
 interface Props {
   initial?: Habit;
+  defaults?: { icon?: string; color?: string; frequencyKind?: string };
   routineOptions: { label: string; value: string }[];
   onSubmit: (draft: HabitDraft) => Promise<void>;
 }
 
-export function HabitForm({ initial, routineOptions, onSubmit }: Props) {
+export function HabitForm({ initial, defaults, routineOptions, onSubmit }: Props) {
   const theme = useTheme();
   const [advanced, setAdvanced] = useState(Boolean(initial?.routineId || initial?.scheduledTime));
 
   const [name, setName] = useState(initial?.name ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
-  const [icon, setIcon] = useState(initial?.icon ?? 'fire');
-  const [color, setColor] = useState<ColorToken>(initial?.color ?? 'primary');
+  const [icon, setIcon] = useState(initial?.icon ?? defaults?.icon ?? 'fire');
+  const [color, setColor] = useState<ColorToken>(initial?.color ?? (defaults?.color as ColorToken) ?? 'primary');
   const [type, setType] = useState<HabitType>(initial?.type ?? 'binary');
   const [targetValue, setTargetValue] = useState(initial?.targetValue?.toString() ?? '');
   const [unit, setUnit] = useState<PredefinedUnit | ''>(initial?.unit ?? '');
   const [customUnit, setCustomUnit] = useState(initial?.customUnit ?? '');
-  const [frequencyKind, setFrequencyKind] = useState(initial?.frequency.kind ?? 'daily');
+  const [frequencyKind, setFrequencyKind] = useState<FrequencyKind>(() =>
+    isFrequencyKind(initial?.frequency.kind ?? defaults?.frequencyKind)
+      ? (initial?.frequency.kind ?? (defaults?.frequencyKind as FrequencyKind))
+      : 'daily',
+  );
   const [days, setDays] = useState<Weekday[]>(initial?.frequency.schedule.days ?? []);
   const [countPerPeriod, setCountPerPeriod] = useState(initial?.frequency.schedule.countPerPeriod ?? 3);
   const [routineId, setRoutineId] = useState(initial?.routineId ?? '');
@@ -221,6 +226,10 @@ export function HabitForm({ initial, routineOptions, onSubmit }: Props) {
       <Button label="Salvar hábito" onPress={() => void handleSubmit()} />
     </View>
   );
+}
+
+function isFrequencyKind(value: string | undefined): value is FrequencyKind {
+  return value === 'daily' || value === 'weekdays' || value === 'x_per_week' || value === 'x_per_month';
 }
 
 const styles = StyleSheet.create({
