@@ -2,6 +2,7 @@ node_modules/
 .expo/
 dist/
 build/
+*.apk
 *.log
 .DS_Store
 *.pid
