@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 5,
-  "state_name": "knowledge-capture",
+  "state": 4,
+  "state_name": "review-apk-build",
   "phase": "A-mvp-baseline",
   "approved_gates": [
     {
@@ -31,5 +31,5 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-03T20:23:37.361Z"
+  "updated_at": "2026-10-03T20:24:40.395Z"
 }
