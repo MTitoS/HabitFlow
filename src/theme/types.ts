@@ -6,6 +6,7 @@ export type ColorToken =
   | 'secondary'
   | 'accent'
   | 'success'
+  | 'danger'
   | 'textPrimary'
   | 'textSecondary'
   | 'textMuted'
