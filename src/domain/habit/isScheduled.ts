@@ -1,4 +1,4 @@
-import { monthStartOf, weekdayOf, weekStartOf } from '@/domain/date/dateUtils';
+import { addDays, compareDateKeys, monthStartOf, weekdayOf, weekStartOf } from '@/domain/date/dateUtils';
 import { Habit } from '@/domain/habit/model';
 import { OPEN } from '@/config/opens';
 import { scheduledDateKeysForPeriod } from '@/domain/habit/frequencyPolicy';
@@ -25,4 +25,12 @@ export function isScheduled(habit: Habit, dateKey: string): boolean {
     default:
       return false;
   }
+}
+
+export function scheduledKeysInRange(habit: Habit, fromDateKey: string, toDateKey: string): string[] {
+  const keys: string[] = [];
+  for (let d = fromDateKey; compareDateKeys(d, toDateKey) <= 0; d = addDays(d, 1)) {
+    if (isScheduled(habit, d)) keys.push(d);
+  }
+  return keys;
 }

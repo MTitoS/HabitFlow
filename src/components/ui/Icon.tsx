@@ -1,4 +1,4 @@
-import { Activity, BookOpen, Brain, Clock, Coffee, Droplet, Dumbbell, Flame, Footprints, Heart, Leaf, Moon, Music, Pencil, Star, Sun, Trophy, Zap } from 'lucide-react-native';
+import { Activity, BookOpen, Brain, CalendarDays, ChartColumn, Check, Circle, Clock, Coffee, Droplet, Dumbbell, Flame, Footprints, Heart, Home, Leaf, ListTodo, Minus, Moon, Music, Pencil, Plus, Settings, Star, Sun, Trophy, X, Zap } from 'lucide-react-native';
 import { Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
 import { ColorToken } from '@/theme/types';
@@ -7,6 +7,10 @@ const GLYPHS: Record<string, unknown> = {
   activity: Activity,
   book: BookOpen,
   brain: Brain,
+  calendar: CalendarDays,
+  chart: ChartColumn,
+  check: Check,
+  circle: Circle,
   clock: Clock,
   coffee: Coffee,
   droplet: Droplet,
@@ -14,20 +18,26 @@ const GLYPHS: Record<string, unknown> = {
   fire: Flame,
   footprints: Footprints,
   heart: Heart,
+  home: Home,
   leaf: Leaf,
+  list: ListTodo,
+  minus: Minus,
   moon: Moon,
   music: Music,
   pencil: Pencil,
+  plus: Plus,
+  settings: Settings,
   star: Star,
   sun: Sun,
   trophy: Trophy,
+  x: X,
   zap: Zap,
 };
 
 interface Props {
   name: string;
   size?: number;
-  color?: ColorToken;
+  color?: ColorToken | string;
 }
 
 export function Icon({ name, size = 20, color = 'textPrimary' }: Props) {
@@ -36,13 +46,15 @@ export function Icon({ name, size = 20, color = 'textPrimary' }: Props) {
     | ((props: { size: number; color: string; strokeWidth?: number }) => React.ReactElement)
     | undefined;
 
+  const resolvedColor = typeof color === 'string' && color.startsWith('#') ? color : theme.color(color as ColorToken);
+
   if (!glyph) {
     return (
-      <RNText testID="habit-icon-emoji" style={{ fontSize: size, lineHeight: size + 4 }}>
+      <RNText testID="habit-icon-emoji" style={{ color: resolvedColor, fontSize: size, lineHeight: size + 4 }}>
         {name}
       </RNText>
     );
   }
 
-  return <View testID="habit-icon">{glyph({ size, color: theme.color(color) })}</View>;
+  return <View testID="habit-icon">{glyph({ size, color: resolvedColor })}</View>;
 }
