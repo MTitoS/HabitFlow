@@ -10,6 +10,7 @@ import { HabitRow } from '@/components/feature/HabitRow';
 import { EmptyState, ErrorState } from '@/components/feature/EmptyState';
 import { todayKey } from '@/domain/date/dateUtils';
 import { groupHabitsByRoutine, scheduledForDay } from '@/domain/routine/group';
+import { sortByTime } from '@/domain/routine/order';
 import { statusForView } from '@/domain/stats/materializeMissed';
 import { triggerSuccess } from '@/services/haptics';
 import { isOnboardingDone } from '@/services/prefs';
@@ -73,9 +74,11 @@ function TodayBody() {
 
   const groups = groupHabitsByRoutine(scheduledToday, routines).map((group) => ({
     ...group,
-    habits: group.habitIds
-      .map((id) => scheduledToday.find((h) => h.id === id))
-      .filter((h): h is Habit => Boolean(h)),
+    habits: sortByTime(
+      group.habitIds
+        .map((id) => scheduledToday.find((h) => h.id === id))
+        .filter((h): h is Habit => Boolean(h)),
+    ),
   }));
 
   return (

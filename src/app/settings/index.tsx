@@ -5,6 +5,7 @@ import { AppScaffold } from '@/components/layout/AppScaffold';
 import { spacing } from '@/theme/spacing';
 
 const ITEMS = [
+  { href: '/routines', label: 'Rotinas', icon: '🏷️' },
   { href: '/settings/appearance', label: 'Aparência', icon: '🌗' },
   { href: '/settings/notifications', label: 'Notificações', icon: '🔔' },
   { href: '/settings/defaults', label: 'Padrões', icon: '⚙️' },
