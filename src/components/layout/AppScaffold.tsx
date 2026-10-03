@@ -95,7 +95,7 @@ export function AppScaffold({ title, children, actions }: Props) {
             {actions}
           </View>
           <ScrollView
-            contentContainerStyle={styles.content}
+            contentContainerStyle={[styles.content, isDesktop && styles.contentDesktop]}
             showsVerticalScrollIndicator={false}
           >
             {children}
@@ -211,6 +211,11 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     gap: spacing.lg,
     paddingBottom: 120,
+  },
+  contentDesktop: {
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 920,
   },
   bottomNav: {
     flexDirection: 'row',

@@ -12,6 +12,7 @@ import { todayKey } from '@/domain/date/dateUtils';
 import { groupHabitsByRoutine, scheduledForDay } from '@/domain/routine/group';
 import { sortByTime } from '@/domain/routine/order';
 import { statusForView } from '@/domain/stats/materializeMissed';
+import { useSkip as applySkip } from '@/domain/skip-credit/useSkip';
 import { triggerSuccess } from '@/services/haptics';
 import { isOnboardingDone } from '@/services/prefs';
 import { useEffect, useState } from 'react';
@@ -110,6 +111,19 @@ function TodayBody() {
     }
   };
 
+  const skipHabit = async (habit: Habit) => {
+    if (!skipCredit) return;
+    const now = new Date();
+    const result = applySkip(skipCredit, now, habit.id, todayKey(now));
+    if (!result.ok) {
+      showToast('error', 'Sem créditos de pulo');
+      return;
+    }
+    await repos.skipCredit.save(result.state);
+    await repos.records.setSkipped(habit.id, todayKey(now), now);
+    showToast('skip', `${habit.name} pulado (crédito ${result.state.balance} restante)`);
+  };
+
   const groups = groupHabitsByRoutine(scheduledToday, routines).map((group) => ({
     ...group,
     habits: sortByTime(
@@ -153,6 +167,7 @@ function TodayBody() {
                     habit={habit}
                     state={state}
                     onToggle={() => void completeHabit(habit)}
+                    onSkip={state === 'pending' ? () => void skipHabit(habit) : undefined}
                   />
                 );
               })}

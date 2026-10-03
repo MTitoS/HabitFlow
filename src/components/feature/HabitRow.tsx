@@ -1,4 +1,4 @@
-import { StyleSheet, Text as RNText, View } from 'react-native';
+import { Pressable, StyleSheet, Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
 import { spacing } from '@/theme/spacing';
 import { Habit } from '@/domain/habit/model';
@@ -10,9 +10,10 @@ interface Props {
   habit: Habit;
   state: CheckboxState;
   onToggle?: () => void;
+  onSkip?: () => void;
 }
 
-export function HabitRow({ habit, state, onToggle }: Props) {
+export function HabitRow({ habit, state, onToggle, onSkip }: Props) {
   const theme = useTheme();
   return (
     <View
@@ -35,7 +36,21 @@ export function HabitRow({ habit, state, onToggle }: Props) {
           </RNText>
         </View>
       </View>
-      <HabitCheckbox habit={habit} state={state} onToggle={onToggle} />
+      <View style={styles.actions}>
+        {state === 'pending' && onSkip ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Pular ${habit.name} (usar 1 crédito)`}
+            onPress={onSkip}
+            hitSlop={6}
+          >
+            <RNText style={{ color: theme.color('accent'), fontSize: 13, fontWeight: '600' }}>
+              pular
+            </RNText>
+          </Pressable>
+        ) : null}
+        <HabitCheckbox habit={habit} state={state} onToggle={onToggle} />
+      </View>
     </View>
   );
 }
@@ -59,5 +74,10 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     gap: 2,
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
   },
 });

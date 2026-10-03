@@ -5,6 +5,10 @@ export interface MotionContextValue {
   animate: (callback: () => void) => void;
 }
 
+export function shouldAnimate(reducedMotion: boolean): boolean {
+  return !reducedMotion;
+}
+
 const MotionContext = createContext<MotionContextValue>({
   reducedMotion: false,
   animate: (cb) => cb(),
@@ -30,8 +34,9 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     () => ({
       reducedMotion,
       animate: (cb) => {
-        if (reducedMotion) return;
-        cb();
+        if (shouldAnimate(reducedMotion)) {
+          cb();
+        }
       },
     }),
     [reducedMotion],

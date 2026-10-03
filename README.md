@@ -1,56 +1,42 @@
-# Welcome to your Expo app 👋
+# HabitFlow
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Habit Tracker + Routine — React Native (Expo). MVP local-first (sem login/cloud).
 
-## Get started
+**Fonte de verdade do produto:** [`docs/SPEC_DRIVER.md`](docs/SPEC_DRIVER.md)
+**Contrato técnico:** [`docs/SPEC.md`](docs/SPEC.md) · **Plano TDD:** [`docs/PLAN.md`](docs/PLAN.md) · **Status por task:** [`docs/PROGRESS.md`](docs/PROGRESS.md)
 
-1. Install dependencies
+## Stack
 
-   ```bash
-   npm install
-   ```
+- Expo SDK 57 (React Native 0.86, Expo Router), TypeScript strict
+- Persistência local: repositórios por interface sobre AsyncStorage (nativo/web) e in-memory (testes)
+- `expo-notifications` (lembretes), `expo-haptics` (microinterações), `lucide-react-native` (ícones)
+- Domínio 100% puro em `src/domain/` com testes unitários
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Como rodar
 
 ```bash
-npm run reset-project
+npm install          # instala dependências
+npm start            # dev server (Android/iOS via Expo Go ou dev build)
+npm run web          # versão web responsiva
+npm test             # suíte de testes (jest)
+npm run lint         # eslint
+npm run typecheck    # tsc --noEmit
+npx expo export --platform web   # build estático web
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Estrutura
 
-### Other setup steps
+```
+src/
+├── app/          # Expo Router (rotas/telas)
+├── components/   # ui primitivas + feature components
+├── domain/       # regras de negócio puras (streak, skip, stats, …)
+├── data/         # repositórios por interface + store adapters
+├── services/     # fonts, haptics, motion, notifications, prefs
+├── theme/        # tokens semânticos light/dark
+└── utils/
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Decisões OPEN
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Default de cada ponto isolado em `src/config/opens.ts` e nos arquivos de custódia do PLAN (ex.: `domain/stats/completionRate.ts`, `services/notifications/policy.ts`). Trocar = editar apenas o arquivo indicado.
