@@ -7,6 +7,7 @@ import { ToastProvider } from '@/components/ui/Toast';
 import { MotionProvider } from '@/services/motion';
 import { DataProvider, useData } from '@/data/DataProvider';
 import { useAppFonts } from '@/services/fonts';
+import { NotificationSync } from '@/services/notifications/NotificationSync';
 
 export default function RootLayout() {
   const { fontsLoaded } = useAppFonts();
@@ -18,6 +19,7 @@ export default function RootLayout() {
           <MotionProvider>
             <ToastProvider>
               <StatusBar style="auto" />
+              <NotificationSync />
               {fontsLoaded ? <Slot /> : <SplashScreen />}
             </ToastProvider>
           </MotionProvider>
