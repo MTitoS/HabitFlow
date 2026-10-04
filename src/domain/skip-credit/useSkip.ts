@@ -1,11 +1,15 @@
 import { toDateKey } from '@/domain/date/dateUtils';
 import { SkipCredit, clampBalance } from '@/domain/skip-credit/grantWeeklyCredit';
-import { skipped as makeSkippedRecord } from '@/domain/record/transitions';
+import { pending as makePendingRecord, skipped as makeSkippedRecord } from '@/domain/record/transitions';
 import { HabitRecord } from '@/domain/record/model';
 
 export type SkipResult =
   | { ok: true; state: SkipCredit; record: HabitRecord }
   | { ok: false; reason: 'no_credit' | 'not_today' };
+
+export type UndoSkipResult =
+  | { ok: true; state: SkipCredit; record: HabitRecord }
+  | { ok: false; reason: 'not_today' };
 
 export function useSkip(state: SkipCredit, now: Date, habitId: string, dateKey?: string): SkipResult {
   const targetDate = dateKey ?? toDateKey(now);
@@ -25,4 +29,20 @@ export function useSkip(state: SkipCredit, now: Date, habitId: string, dateKey?:
   };
 
   return { ok: true, state: nextState, record: makeSkippedRecord(habitId, targetDate, now) };
+}
+
+export function undoSkip(state: SkipCredit, now: Date, habitId: string, dateKey?: string): UndoSkipResult {
+  const targetDate = dateKey ?? toDateKey(now);
+
+  if (toDateKey(now) !== targetDate) {
+    return { ok: false, reason: 'not_today' };
+  }
+
+  const nextState: SkipCredit = {
+    ...state,
+    balance: clampBalance(state.balance + 1),
+    updatedAt: now.getTime(),
+  };
+
+  return { ok: true, state: nextState, record: makePendingRecord(habitId, targetDate) };
 }

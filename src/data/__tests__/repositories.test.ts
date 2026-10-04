@@ -149,4 +149,30 @@ describe('repositories write contract', () => {
     expect((await repos.habits.active()).map((h) => h.id)).not.toContain(habit.id);
     expect((await repos.habits.archived()).map((h) => h.id)).toContain(habit.id);
   });
+
+  it('T6: undoSkipped reverts today-only skipped record to pending', async () => {
+    const { repos, habit } = await setup();
+    await repos.records.setSkipped(habit.id, today, now);
+    await repos.records.undoSkipped(habit.id, today, now);
+    const all = await repos.records.forHabit(habit.id);
+    expect(all).toHaveLength(1);
+    expect(all[0].id).toBe(`${habit.id}__${today}`);
+    expect(all[0].status).toBe('pending');
+  });
+
+  it('T6: refuses to undoSkipped a past date (append-only intact)', async () => {
+    const { repos, habit } = await setup();
+    await repos.records.setSkipped(habit.id, today, now);
+    await expect(repos.records.undoSkipped(habit.id, yesterday, now)).rejects.toThrow(
+      'record_write_past_date',
+    );
+  });
+
+  it('T6: refuses to undoSkipped a record that is not skipped', async () => {
+    const { repos, habit } = await setup();
+    await repos.records.setCompleted(habit.id, today, now);
+    await expect(repos.records.undoSkipped(habit.id, today, now)).rejects.toThrow(
+      'record_conflict',
+    );
+  });
 });

@@ -1,4 +1,4 @@
-import { Activity, Archive, Bell, BookOpen, Brain, CalendarDays, ChartColumn, Check, Circle, CircleSlash2, Clock, Coffee, Database, Droplet, Dumbbell, Flame, Footprints, Heart, Home, Info, Leaf, ListTodo, Minus, Moon, Music, Pencil, Plus, Settings, Star, Sun, Tag, Target, Trophy, X, Zap } from 'lucide-react-native';
+import { Activity, Archive, Bell, BookOpen, Brain, CalendarDays, ChartColumn, Check, Circle, CircleSlash2, Clock, Coffee, Database, Droplet, Dumbbell, Flame, Footprints, Heart, Home, Info, Leaf, ListTodo, Minus, Moon, Music, Pencil, Plus, Settings, Star, Sun, Tag, Target, Trophy, Undo2, X, Zap } from 'lucide-react-native';
 import { createElement } from 'react';
 import { Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
@@ -38,6 +38,7 @@ const GLYPHS: Record<string, unknown> = {
   tag: Tag,
   target: Target,
   trophy: Trophy,
+  undo: Undo2,
   x: X,
   zap: Zap,
 };

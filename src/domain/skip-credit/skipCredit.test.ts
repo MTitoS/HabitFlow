@@ -1,5 +1,5 @@
 import { createSkipCredit, grantWeeklyCredit } from '@/domain/skip-credit/grantWeeklyCredit';
-import { useSkip } from '@/domain/skip-credit/useSkip';
+import { undoSkip, useSkip } from '@/domain/skip-credit/useSkip';
 
 const singletonId = 'skip_credit';
 
@@ -73,5 +73,39 @@ describe('skip credit', () => {
     state = r1.ok ? r1.state : state;
     const r2 = useSkip(state, mon, 'h2', '2026-05-04');
     expect(r2.ok).toBe(false);
+  });
+
+  it('T6: undoSkip restores the spent credit and reverts record to pending (today only)', () => {
+    let state = createSkipCredit(singletonId, mon);
+    state = grantWeeklyCredit(state, mon);
+    const skip = useSkip(state, mon, 'h1', '2026-05-04');
+    expect(skip.ok).toBe(true);
+    if (!skip.ok) return;
+    const result = undoSkip(skip.state, mon, 'h1', '2026-05-04');
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.state.balance).toBe(1);
+      expect(result.record.status).toBe('pending');
+      expect(result.record.habitId).toBe('h1');
+      expect(result.record.date).toBe('2026-05-04');
+    }
+  });
+
+  it('T6: undoSkip never exceeds the hard cap of 3', () => {
+    let state = createSkipCredit(singletonId, mon);
+    for (let i = 0; i < 7; i += 1) {
+      state = grantWeeklyCredit(state, new Date(2026, 3, 6 + 7 * i, 9, 0, 0));
+    }
+    expect(state.balance).toBe(3);
+    const result = undoSkip(state, mon, 'h1', '2026-05-04');
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.state.balance).toBe(3);
+  });
+
+  it('T6: undoSkip refuses to act on a past date', () => {
+    const state = createSkipCredit(singletonId, mon);
+    const result = undoSkip(state, mon, 'h1', '2026-05-03');
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe('not_today');
   });
 });

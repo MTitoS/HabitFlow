@@ -83,4 +83,20 @@ describe('isScheduled', () => {
     });
     expect(isScheduled(habit, '2026-05-04')).toBe(true);
   });
+
+  it('T7: habit created today is not scheduled for days before its creation', () => {
+    const createdToday = makeHabit({ createdAt: new Date(2026, 4, 4, 9, 0, 0).getTime() });
+    expect(isScheduled(createdToday, '2026-05-03')).toBe(false);
+    expect(isScheduled(createdToday, '2026-05-04')).toBe(true);
+    expect(isScheduled(createdToday, '2026-05-05')).toBe(true);
+  });
+
+  it('T7: x_per_week habit never schedules pre-creation days of its period', () => {
+    const h = makeHabit({
+      createdAt: new Date(2026, 4, 6, 9, 0, 0).getTime(),
+      frequency: { kind: 'x_per_week', schedule: { countPerPeriod: 3 } },
+    });
+    expect(isScheduled(h, '2026-05-04')).toBe(false);
+    expect(isScheduled(h, '2026-05-06')).toBe(true);
+  });
 });

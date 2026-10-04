@@ -39,7 +39,9 @@ export function HabitCheckbox({ habit, state, onToggle, disabled = false, size =
       ? `${habit.name}: marcar como concluído`
       : isCompleted
         ? `${habit.name}: desfazer marcação`
-        : `${habit.name}: ${meta.label}`
+        : state === 'skipped'
+          ? `${habit.name}: desfazer pulo (recupera crédito)`
+          : `${habit.name}: ${meta.label}`
     : `${habit.name}: ${meta.label}`;
 
   const content = (

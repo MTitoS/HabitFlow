@@ -1,4 +1,4 @@
-import { currentStreak } from '@/domain/streak/currentStreak';
+import { currentStreak, bestStreak } from '@/domain/streak/currentStreak';
 import { Habit } from '@/domain/habit/model';
 import { HabitRecord } from '@/domain/record/model';
 
@@ -87,5 +87,11 @@ describe('currentStreak', () => {
       rec('2026-05-07', 'completed'),
     ];
     expect(currentStreak(habit(), records, new Date(2026, 4, 7, 12, 0, 0))).toBe(3);
+  });
+
+  it('T7: streak never counts scheduled days before the habit was created', () => {
+    const h = habit({ createdAt: new Date(2026, 4, 7, 12, 0, 0).getTime() });
+    expect(currentStreak(h, [], day)).toBe(0);
+    expect(bestStreak(h, [], day)).toBe(0);
   });
 });

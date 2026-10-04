@@ -12,10 +12,11 @@ interface Props {
   state: CheckboxState;
   onToggle?: () => void;
   onSkip?: () => void;
+  onUndoSkip?: () => void;
   skipDisabled?: boolean;
 }
 
-export function HabitRow({ habit, state, onToggle, onSkip, skipDisabled = false }: Props) {
+export function HabitRow({ habit, state, onToggle, onSkip, onUndoSkip, skipDisabled = false }: Props) {
   const theme = useTheme();
   return (
     <View
@@ -55,6 +56,22 @@ export function HabitRow({ habit, state, onToggle, onSkip, skipDisabled = false 
             ]}
           >
             <Icon name="circleSlash2" size={22} color={skipDisabled ? 'textMuted' : 'accent'} />
+          </Pressable>
+        ) : state === 'skipped' ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Desfazer pulo de ${habit.name} (recuperar 1 crédito)`}
+            accessibilityState={{ disabled: !onUndoSkip }}
+            disabled={!onUndoSkip}
+            onPress={onUndoSkip}
+            hitSlop={8}
+            style={({ pressed }) => [
+              styles.skipButton,
+              !onUndoSkip && styles.skipDisabled,
+              pressed && onUndoSkip && styles.skipPressed,
+            ]}
+          >
+            <Icon name="undo" size={22} color="accent" />
           </Pressable>
         ) : null}
       </View>

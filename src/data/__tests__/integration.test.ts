@@ -20,6 +20,8 @@ describe('integration: full persistence flow', () => {
       type: 'binary',
       frequency: { kind: 'daily', schedule: {} },
     });
+    const habitWithHistory = { ...habit, createdAt: new Date(2026, 3, 1).getTime() };
+    await repos.habits.update(habitWithHistory);
 
     const habit2 = await repos.habits.create({
       name: 'Ler',
@@ -29,11 +31,11 @@ describe('integration: full persistence flow', () => {
       frequency: { kind: 'daily', schedule: {} },
     });
 
-    await repos.records.ensurePendings(habit.id, [today, tomorrow, '2026-05-07'], now);
-    expect(await repos.records.forHabit(habit.id)).toHaveLength(3);
+    await repos.records.ensurePendings(habitWithHistory.id, [today, tomorrow, '2026-05-07'], now);
+    expect(await repos.records.forHabit(habitWithHistory.id)).toHaveLength(3);
 
-    await repos.records.setCompleted(habit.id, today, now);
-    const after = await repos.records.forHabit(habit.id);
+    await repos.records.setCompleted(habitWithHistory.id, today, now);
+    const after = await repos.records.forHabit(habitWithHistory.id);
     expect(after.find((r) => r.date === today)?.status).toBe('completed');
 
     let credit = await repos.skipCredit.get();
@@ -52,11 +54,11 @@ describe('integration: full persistence flow', () => {
     const skippedFacts = await repos.records.forHabit(habit2.id);
     expect(skippedFacts[0].status).toBe('skipped');
 
-    const facts = await repos.records.forHabit(habit.id);
+    const facts = await repos.records.forHabit(habitWithHistory.id);
     const todayRecord = facts.find((r) => r.date === today);
     expect(todayRecord?.status).toBe('completed');
 
-    const streaks = computeStreaks(habit, facts, now);
+    const streaks = computeStreaks(habitWithHistory, facts, now);
     expect(streaks.current).toBe(1);
   });
 

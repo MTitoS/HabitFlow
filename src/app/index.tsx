@@ -12,7 +12,7 @@ import { todayKey } from '@/domain/date/dateUtils';
 import { groupHabitsByRoutine, scheduledForDay } from '@/domain/routine/group';
 import { sortByTime } from '@/domain/routine/order';
 import { statusForView } from '@/domain/stats/materializeMissed';
-import { useSkip as applySkip } from '@/domain/skip-credit/useSkip';
+import { useSkip as applySkip, undoSkip as applyUndoSkip } from '@/domain/skip-credit/useSkip';
 import { triggerSuccess } from '@/services/haptics';
 import { isOnboardingDone } from '@/services/prefs';
 import { useEffect, useState } from 'react';
@@ -130,6 +130,19 @@ function TodayBody() {
     showToast('skip', `${habit.name} pulado (crédito ${result.state.balance} restante)`);
   };
 
+  const undoSkipHabit = async (habit: Habit) => {
+    if (!skipCredit) return;
+    const now = new Date();
+    const result = applyUndoSkip(skipCredit, now, habit.id, todayKey(now));
+    if (!result.ok) {
+      showToast('error', 'Não foi possível desfazer o pulo agora');
+      return;
+    }
+    await repos.skipCredit.save(result.state);
+    await repos.records.undoSkipped(habit.id, todayKey(now), now);
+    showToast('success', `${habit.name} voltou para pendente (crédito recuperado)`);
+  };
+
   const groups = groupHabitsByRoutine(scheduledToday, routines).map((group) => ({
     ...group,
     habits: sortByTime(
@@ -176,9 +189,12 @@ function TodayBody() {
                     onToggle={
                       state === 'pending' || state === 'completed'
                         ? () => void toggleHabit(habit, state)
-                        : undefined
+                        : state === 'skipped'
+                          ? () => void undoSkipHabit(habit)
+                          : undefined
                     }
                     onSkip={state === 'pending' ? () => void skipHabit(habit) : undefined}
+                    onUndoSkip={state === 'skipped' ? () => void undoSkipHabit(habit) : undefined}
                   />
                 );
               })}

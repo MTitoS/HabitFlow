@@ -52,6 +52,16 @@ describe('aggregate', () => {
     expect(may6?.completed).toBe(1);
   });
 
+  it('T7: habit created today does not change yesterday weekly completion', () => {
+    const createdToday = { ...habit('a'), createdAt: new Date(2026, 4, 6, 9, 0, 0).getTime() };
+    const series = weeklySeries([createdToday], [rec('a', '2026-05-06', 'completed')], now);
+    const yesterday = series.find((p) => p.dateKey === '2026-05-05');
+    expect(yesterday?.scheduled).toBe(0);
+    expect(yesterday?.percent).toBe(0);
+    const todayPoint = series.find((p) => p.dateKey === '2026-05-06');
+    expect(todayPoint?.scheduled).toBe(1);
+  });
+
   it('totals counts completions and skips', () => {
     const t = totals([habit('a')], [
       rec('a', '2026-05-04', 'completed'),

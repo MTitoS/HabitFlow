@@ -1,9 +1,11 @@
-import { addDays, compareDateKeys, monthStartOf, weekdayOf, weekStartOf } from '@/domain/date/dateUtils';
+import { addDays, compareDateKeys, monthStartOf, toDateKey, weekdayOf, weekStartOf } from '@/domain/date/dateUtils';
 import { Habit } from '@/domain/habit/model';
 import { OPEN } from '@/config/opens';
 import { scheduledDateKeysForPeriod } from '@/domain/habit/frequencyPolicy';
 
 export function isScheduled(habit: Habit, dateKey: string): boolean {
+  if (compareDateKeys(dateKey, toDateKey(new Date(habit.createdAt))) < 0) return false;
+
   const { kind, schedule } = habit.frequency;
 
   switch (kind) {
