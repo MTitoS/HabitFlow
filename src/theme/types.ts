@@ -10,11 +10,39 @@ export type ColorToken =
   | 'textPrimary'
   | 'textSecondary'
   | 'textMuted'
-  | 'border';
+  | 'border'
+  | 'habitOrange'
+  | 'habitAmber'
+  | 'habitLime'
+  | 'habitGreen'
+  | 'habitTeal'
+  | 'habitCyan'
+  | 'habitBlue'
+  | 'habitIndigo'
+  | 'habitPurple'
+  | 'habitMagenta'
+  | 'habitPink'
+  | 'habitRose'
+  | 'habitBrown'
+  | 'habitSky';
 
 export const HABIT_COLOR_OPTIONS: ColorToken[] = [
   'primary',
   'secondary',
   'accent',
   'success',
+  'habitOrange',
+  'habitAmber',
+  'habitLime',
+  'habitGreen',
+  'habitTeal',
+  'habitCyan',
+  'habitBlue',
+  'habitIndigo',
+  'habitPurple',
+  'habitMagenta',
+  'habitPink',
+  'habitRose',
+  'habitBrown',
+  'habitSky',
 ];

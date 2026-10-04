@@ -1,4 +1,4 @@
-import { Activity, BookOpen, Brain, CalendarDays, ChartColumn, Check, Circle, Clock, Coffee, Droplet, Dumbbell, Flame, Footprints, Heart, Home, Leaf, ListTodo, Minus, Moon, Music, Pencil, Plus, Settings, Star, Sun, Trophy, X, Zap } from 'lucide-react-native';
+import { Activity, Archive, Bell, BookOpen, Brain, CalendarDays, ChartColumn, Check, Circle, Clock, Coffee, Database, Droplet, Dumbbell, Flame, Footprints, Heart, Home, Info, Leaf, ListTodo, Minus, Moon, Music, Pencil, Plus, Settings, Star, Sun, Tag, Target, Trophy, X, Zap } from 'lucide-react-native';
 import { createElement } from 'react';
 import { Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
@@ -6,6 +6,8 @@ import { ColorToken } from '@/theme/types';
 
 const GLYPHS: Record<string, unknown> = {
   activity: Activity,
+  archive: Archive,
+  bell: Bell,
   book: BookOpen,
   brain: Brain,
   calendar: CalendarDays,
@@ -14,12 +16,14 @@ const GLYPHS: Record<string, unknown> = {
   circle: Circle,
   clock: Clock,
   coffee: Coffee,
+  database: Database,
   droplet: Droplet,
   dumbbell: Dumbbell,
   fire: Flame,
   footprints: Footprints,
   heart: Heart,
   home: Home,
+  info: Info,
   leaf: Leaf,
   list: ListTodo,
   minus: Minus,
@@ -30,6 +34,8 @@ const GLYPHS: Record<string, unknown> = {
   settings: Settings,
   star: Star,
   sun: Sun,
+  tag: Tag,
+  target: Target,
   trophy: Trophy,
   x: X,
   zap: Zap,

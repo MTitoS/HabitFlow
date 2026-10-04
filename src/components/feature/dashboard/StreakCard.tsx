@@ -2,6 +2,7 @@ import { StyleSheet, Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
 import { spacing } from '@/theme/spacing';
 import { radius } from '@/theme/radius';
+import { Icon } from '@/components/ui/Icon';
 
 interface Props {
   current: number;
@@ -13,13 +14,13 @@ export function StreakCard({ current, best }: Props) {
   return (
     <View style={[styles.card, { backgroundColor: theme.color('surface'), borderColor: theme.color('border') }]}>
       <View style={styles.item}>
-        <RNText style={styles.emoji}>🔥</RNText>
+        <Icon name="fire" size={22} color="accent" />
         <RNText style={[styles.value, { color: theme.color('textPrimary') }]}>{current}</RNText>
         <RNText style={{ color: theme.color('textMuted'), fontSize: 12 }}>sequência atual</RNText>
       </View>
       <View style={[styles.divider, { backgroundColor: theme.color('border') }]} />
       <View style={styles.item}>
-        <RNText style={styles.emoji}>🏆</RNText>
+        <Icon name="trophy" size={22} color="secondary" />
         <RNText style={[styles.value, { color: theme.color('textPrimary') }]}>{best}</RNText>
         <RNText style={{ color: theme.color('textMuted'), fontSize: 12 }}>melhor sequência</RNText>
       </View>
@@ -39,9 +40,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     gap: 2,
-  },
-  emoji: {
-    fontSize: 22,
   },
   value: {
     fontFamily: 'PlusJakartaSans_800ExtraBold',

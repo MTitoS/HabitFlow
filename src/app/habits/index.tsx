@@ -12,17 +12,19 @@ import { completionRate } from '@/domain/stats/completionRate';
 import { scheduledKeysInRange } from '@/domain/habit/isScheduled';
 import { addDays, daysInMonth, monthStartOf, todayKey } from '@/domain/date/dateUtils';
 import { HabitRecord } from '@/domain/record/model';
+import { useBreakpoint } from '@/utils/useBreakpoint';
 
 export default function HabitsScreen() {
   const { habits, records } = useData();
   const [tab, setTab] = useState<'active' | 'archived'>('active');
+  const isDesktop = useBreakpoint() === 'desktop';
   const now = new Date();
   const filtered = habits.filter((h) => (tab === 'active' ? !h.archivedAt : Boolean(h.archivedAt)));
   const monthStart = monthStartOf(todayKey(now));
   const monthEnd = addDays(monthStart, daysInMonth(Number(monthStart.slice(0, 4)), Number(monthStart.slice(5, 7)) - 1) - 1);
 
   return (
-    <AppScaffold title="Hábitos" actions={<AddHabitButton />}>
+    <AppScaffold title="Hábitos" actions={isDesktop ? <AddHabitButton /> : undefined}>
       <MetricTabSelector active={tab} onChange={setTab} />
 
       {filtered.length === 0 ? (
@@ -50,6 +52,8 @@ export default function HabitsScreen() {
           })}
         </View>
       )}
+
+      {!isDesktop ? <AddHabitButton /> : null}
     </AppScaffold>
   );
 }

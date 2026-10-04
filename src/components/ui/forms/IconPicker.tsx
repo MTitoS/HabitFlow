@@ -1,43 +1,53 @@
 import { Pressable, StyleSheet, Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
 import { spacing } from '@/theme/spacing';
-import { ColorToken, HABIT_COLOR_OPTIONS } from '@/theme/types';
-import { colorOf } from '@/theme/tokens';
+import { Icon } from '@/components/ui/Icon';
+
+export const HABIT_ICON_PRESET = [
+  'droplet',
+  'fire',
+  'book',
+  'footprints',
+  'brain',
+  'dumbbell',
+  'moon',
+  'sun',
+  'heart',
+  'target',
+] as const;
+
+export type HabitIconName = (typeof HABIT_ICON_PRESET)[number];
 
 interface Props {
   label: string;
-  value: ColorToken;
-  onChange: (token: ColorToken) => void;
+  value?: string;
+  onChange: (name: string) => void;
 }
 
-export function ColorPicker({ label, value, onChange }: Props) {
+export function IconPicker({ label, value, onChange }: Props) {
   const theme = useTheme();
-  const scheme = theme.scheme;
-
   return (
     <View style={styles.wrapper}>
       <RNText style={[styles.label, { color: theme.color('textSecondary') }]}>{label}</RNText>
       <View style={styles.row}>
-        {HABIT_COLOR_OPTIONS.map((token) => {
-          const selected = token === value;
+        {HABIT_ICON_PRESET.map((name) => {
+          const selected = name === value;
           return (
             <Pressable
-              key={token}
+              key={name}
               accessibilityRole="radio"
               accessibilityState={{ selected }}
-              accessibilityLabel={token}
-              onPress={() => onChange(token)}
+              accessibilityLabel={name}
+              onPress={() => onChange(name)}
               style={[
                 styles.swatch,
                 {
-                  backgroundColor: colorOf(scheme, token),
-                  borderColor: selected ? theme.color('primary') : theme.color('border'),
+                  backgroundColor: selected ? theme.color('secondary') : theme.color('surface'),
+                  borderColor: selected ? theme.color('secondary') : theme.color('border'),
                 },
               ]}
             >
-              {selected ? (
-                <RNText style={styles.check}>✓</RNText>
-              ) : null}
+              <Icon name={name} size={22} color={selected ? '#FFFFFF' : 'secondary'} />
             </Pressable>
           );
         })}
@@ -58,18 +68,14 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.md,
+    gap: spacing.sm,
   },
   swatch: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: 12,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  check: {
-    color: '#FFFFFF',
-    fontSize: 18,
   },
 });

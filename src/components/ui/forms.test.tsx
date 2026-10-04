@@ -3,6 +3,7 @@ import { renderWithProviders } from '@/components/ui/renderUtils';
 import { Checkbox, Switch } from '@/components/ui/forms/Controls';
 import { TimePicker } from '@/components/ui/forms/TimePicker';
 import { ColorPicker } from '@/components/ui/forms/ColorPicker';
+import { IconPicker, HABIT_ICON_PRESET } from '@/components/ui/forms/IconPicker';
 import { Select } from '@/components/ui/forms/Select';
 import { ColorToken } from '@/theme/types';
 
@@ -51,9 +52,21 @@ describe('forms', () => {
       />,
     );
     const radios = getAllByRole('radio');
-    expect(radios.length).toBeGreaterThanOrEqual(4);
+    expect(radios.length).toBeGreaterThanOrEqual(14);
     await fireEvent.press(radios[1]);
     expect(onChange).toHaveBeenCalled();
+  });
+
+  it('IconPicker exposes the 10 habit lucide preset and emits on select', async () => {
+    const onChange = jest.fn();
+    const { getAllByRole, getByRole } = await renderWithProviders(
+      <IconPicker label="Ícone" value="fire" onChange={onChange} />,
+    );
+    expect(HABIT_ICON_PRESET).toHaveLength(10);
+    const radios = getAllByRole('radio');
+    expect(radios.length).toBe(10);
+    await fireEvent.press(getByRole('radio', { name: 'droplet' }));
+    expect(onChange).toHaveBeenCalledWith('droplet');
   });
 
   it('Select highlights the selected option', async () => {

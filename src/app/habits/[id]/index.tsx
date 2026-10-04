@@ -15,6 +15,8 @@ import { addDays, daysInMonth, monthStartOf, todayKey } from '@/domain/date/date
 import { quantitativeStats } from '@/domain/stats/quantitative';
 import { Sparkline } from '@/components/feature/habit-stats/Sparkline';
 import { EmptyState } from '@/components/feature/EmptyState';
+import { Icon } from '@/components/ui/Icon';
+import { ColorToken } from '@/theme/types';
 
 export default function HabitDetailScreen() {
   const theme = useTheme();
@@ -63,9 +65,9 @@ export default function HabitDetailScreen() {
           <HabitStreak days={current} />
         </View>
         <View style={styles.metrics}>
-          <Metric label="🔥 Atual" value={`${current}`} />
-          <Metric label="🏆 Melhor" value={`${best}`} />
-          <Metric label="✓ Total" value={`${total}`} />
+          <Metric icon="fire" iconColor="secondary" label="Atual" value={`${current}`} />
+          <Metric icon="trophy" iconColor="accent" label="Melhor" value={`${best}`} />
+          <Metric icon="check" iconColor="success" label="Total" value={`${total}`} />
         </View>
         <ProgressBar progress={rate} label={`${Math.round(rate * 100)}% no mês`} />
         <RNText style={{ color: theme.color('textSecondary'), fontSize: 13 }}>
@@ -97,9 +99,9 @@ export default function HabitDetailScreen() {
         <View style={styles.card}>
           <RNText style={[styles.sectionTitle, { color: theme.color('textMuted') }]}>Quantitativo</RNText>
           <View style={styles.metrics}>
-            <Metric label="Média" value={`${quant.averagePerCompleted.toFixed(1)} ${quant.unit}`} />
-            <Metric label="Total" value={`${quant.total} ${quant.unit}`} />
-            <Metric label="Meta batida" value={`${quant.daysGoalMet}/${quant.daysCompleted}`} />
+            <Metric icon="chart" iconColor="secondary" label="Média" value={`${quant.averagePerCompleted.toFixed(1)} ${quant.unit}`} />
+            <Metric icon="check" iconColor="success" label="Total" value={`${quant.total} ${quant.unit}`} />
+            <Metric icon="target" iconColor="accent" label="Meta batida" value={`${quant.daysGoalMet}/${quant.daysCompleted}`} />
           </View>
           <Sparkline values={quant.series.map((point) => point.value)} max={habit.targetValue} />
         </View>
@@ -108,14 +110,27 @@ export default function HabitDetailScreen() {
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Metric({
+  icon,
+  iconColor,
+  label,
+  value,
+}: {
+  icon: string;
+  iconColor: ColorToken;
+  label: string;
+  value: string;
+}) {
   const theme = useTheme();
   return (
     <View>
       <RNText style={{ color: theme.color('textPrimary'), fontFamily: 'PlusJakartaSans_700Bold', fontSize: 18 }}>
         {value}
       </RNText>
-      <RNText style={{ color: theme.color('textMuted'), fontSize: 12 }}>{label}</RNText>
+      <View style={styles.metricLabel}>
+        <Icon name={icon} size={12} color={iconColor} />
+        <RNText style={{ color: theme.color('textMuted'), fontSize: 12 }}>{label}</RNText>
+      </View>
     </View>
   );
 }
@@ -135,6 +150,11 @@ const styles = StyleSheet.create({
   metrics: {
     flexDirection: 'row',
     gap: 24,
+  },
+  metricLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   sectionTitle: {
     fontFamily: 'Inter_600SemiBold',

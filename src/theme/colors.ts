@@ -15,6 +15,20 @@ export interface ThemeColors {
   textSecondary: string;
   textMuted: string;
   border: string;
+  habitOrange: string;
+  habitAmber: string;
+  habitLime: string;
+  habitGreen: string;
+  habitTeal: string;
+  habitCyan: string;
+  habitBlue: string;
+  habitIndigo: string;
+  habitPurple: string;
+  habitMagenta: string;
+  habitPink: string;
+  habitRose: string;
+  habitBrown: string;
+  habitSky: string;
 }
 
 export const lightColors: ThemeColors = {
@@ -30,6 +44,20 @@ export const lightColors: ThemeColors = {
   textSecondary: '#4E5566',
   textMuted: '#8B90A0',
   border: '#E3E6EE',
+  habitOrange: '#FFA26B',
+  habitAmber: '#FFC857',
+  habitLime: '#BBD96B',
+  habitGreen: '#6FCF7F',
+  habitTeal: '#52C9A7',
+  habitCyan: '#5FC8DD',
+  habitBlue: '#74A9F5',
+  habitIndigo: '#8E86FA',
+  habitPurple: '#B9A7FF',
+  habitMagenta: '#DC8BF3',
+  habitPink: '#F58DB0',
+  habitRose: '#F58A8A',
+  habitBrown: '#C79A6B',
+  habitSky: '#8FD0F0',
 };
 
 export const darkColors: ThemeColors = {
@@ -45,6 +73,20 @@ export const darkColors: ThemeColors = {
   textSecondary: '#B8BDCB',
   textMuted: '#7E8598',
   border: '#262B37',
+  habitOrange: '#FFAF7A',
+  habitAmber: '#FFD570',
+  habitLime: '#CBE687',
+  habitGreen: '#83D792',
+  habitTeal: '#6FD6B4',
+  habitCyan: '#7CD4E8',
+  habitBlue: '#8FBDF7',
+  habitIndigo: '#A39BFB',
+  habitPurple: '#C9BBFF',
+  habitMagenta: '#E5A0F6',
+  habitPink: '#F8A4C2',
+  habitRose: '#F7A0A0',
+  habitBrown: '#D0AC7E',
+  habitSky: '#9FD8F2',
 };
 
 export const colorOf = (theme: ThemeName, token: ColorToken): string =>
@@ -63,4 +105,18 @@ export const ALL_COLOR_TOKENS: ColorToken[] = [
   'textSecondary',
   'textMuted',
   'border',
+  'habitOrange',
+  'habitAmber',
+  'habitLime',
+  'habitGreen',
+  'habitTeal',
+  'habitCyan',
+  'habitBlue',
+  'habitIndigo',
+  'habitPurple',
+  'habitMagenta',
+  'habitPink',
+  'habitRose',
+  'habitBrown',
+  'habitSky',
 ];

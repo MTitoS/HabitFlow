@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/forms/Input';
 import { Select } from '@/components/ui/forms/Select';
 import { ColorPicker } from '@/components/ui/forms/ColorPicker';
+import { IconPicker } from '@/components/ui/forms/IconPicker';
 import { Checkbox, Switch } from '@/components/ui/forms/Controls';
 import { TimePicker } from '@/components/ui/forms/TimePicker';
 import { Habit, HabitType, PredefinedUnit, FrequencyKind } from '@/domain/habit/model';
@@ -126,7 +127,8 @@ export function HabitForm({ initial, defaults, routineOptions, onSubmit }: Props
   return (
     <View style={styles.wrapper}>
       <Input label="Nome" placeholder="Ex.: Beber água" value={name} onChangeText={setName} />
-      <Input label="Ícone (emoji ou nome)" placeholder="💧 ou droplet" value={icon} onChangeText={setIcon} />
+      <Input label="Ícone customizado (opcional)" placeholder="💧 ou nome lucide" value={icon} onChangeText={setIcon} />
+      <IconPicker label="Ícone" value={icon} onChange={setIcon} />
       <ColorPicker label="Cor" value={color} onChange={setColor} />
       <Select
         label="Tipo"

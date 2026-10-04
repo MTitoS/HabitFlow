@@ -2,7 +2,7 @@ import { ALL_COLOR_TOKENS, darkColors, lightColors } from '@/theme/tokens';
 import { radius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
 import { typeScale } from '@/theme/typography';
-import { ColorToken } from '@/theme/types';
+import { ColorToken, HABIT_COLOR_OPTIONS } from '@/theme/types';
 
 function luminance(hex: string): number {
   const value = hex.replace('#', '');
@@ -30,6 +30,15 @@ describe('theme tokens', () => {
       expect(dark).toBeTruthy();
       expect(light.startsWith('#')).toBe(true);
       expect(dark.startsWith('#')).toBe(true);
+    }
+  });
+
+  it('habit picker offers 14+ pastel color tokens', () => {
+    expect(HABIT_COLOR_OPTIONS.length).toBeGreaterThanOrEqual(14);
+    for (const token of HABIT_COLOR_OPTIONS) {
+      expect(lightColors[token]).toBeTruthy();
+      expect(darkColors[token]).toBeTruthy();
+      expect(darkColors[token]).not.toBe(lightColors[token]);
     }
   });
 

@@ -3,14 +3,15 @@ import { router } from 'expo-router';
 import { useTheme } from '@/theme/Provider';
 import { AppScaffold } from '@/components/layout/AppScaffold';
 import { spacing } from '@/theme/spacing';
+import { Icon } from '@/components/ui/Icon';
 
 const ITEMS = [
-  { href: '/routines', label: 'Rotinas', icon: '🏷️' },
-  { href: '/settings/appearance', label: 'Aparência', icon: '🌗' },
-  { href: '/settings/notifications', label: 'Notificações', icon: '🔔' },
-  { href: '/settings/defaults', label: 'Padrões', icon: '⚙️' },
-  { href: '/settings/data', label: 'Dados', icon: '🗂️' },
-  { href: '/settings/about', label: 'Sobre', icon: 'ℹ️' },
+  { href: '/routines', label: 'Rotinas', icon: 'tag' },
+  { href: '/settings/appearance', label: 'Aparência', icon: 'moon' },
+  { href: '/settings/notifications', label: 'Notificações', icon: 'bell' },
+  { href: '/settings/defaults', label: 'Padrões', icon: 'settings' },
+  { href: '/settings/data', label: 'Dados', icon: 'database' },
+  { href: '/settings/about', label: 'Sobre', icon: 'info' },
 ];
 
 export default function SettingsScreen() {
@@ -26,7 +27,7 @@ export default function SettingsScreen() {
             onPress={() => router.push(item.href)}
             style={[styles.item, { backgroundColor: theme.color('surface'), borderColor: theme.color('border') }]}
           >
-            <RNText style={styles.emoji}>{item.icon}</RNText>
+            <Icon name={item.icon} size={20} color="textSecondary" />
             <RNText style={{ color: theme.color('textPrimary'), fontFamily: 'Inter_500Medium', fontSize: 15 }}>
               {item.label}
             </RNText>
@@ -50,8 +51,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     borderRadius: 16,
     borderWidth: 1,
-  },
-  emoji: {
-    fontSize: 20,
   },
 });

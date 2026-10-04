@@ -1,13 +1,14 @@
 import { StyleSheet, Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
 import { spacing } from '@/theme/spacing';
+import { Icon } from '@/components/ui/Icon';
 
 export function HabitStreak({ days }: { days: number }) {
   const theme = useTheme();
   if (days <= 0) return null;
   return (
     <View style={styles.row}>
-      <RNText style={styles.emoji}>🔥</RNText>
+      <Icon name="fire" size={14} color="accent" />
       <RNText style={[styles.label, { color: theme.color('textMuted') }]}>
         {days} {days === 1 ? 'dia' : 'dias'}
       </RNText>
@@ -20,9 +21,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,
-  },
-  emoji: {
-    fontSize: 14,
   },
   label: {
     fontSize: 12,

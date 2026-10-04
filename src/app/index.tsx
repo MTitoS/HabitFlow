@@ -4,7 +4,6 @@ import { useTheme } from '@/theme/Provider';
 import { useData } from '@/data/DataProvider';
 import { useToast } from '@/components/ui/Toast';
 import { AppScaffold } from '@/components/layout/AppScaffold';
-import { AddHabitButton } from '@/components/feature/AddHabitButton';
 import { TodayProgress } from '@/components/feature/TodayProgress';
 import { HabitRow } from '@/components/feature/HabitRow';
 import { EmptyState, ErrorState } from '@/components/feature/EmptyState';
@@ -181,8 +180,6 @@ function TodayBody() {
           Créditos de pulo: {skipCredit ? skipCredit.balance : 0}/3
         </RNText>
       </View>
-
-      <AddHabitButton />
 
       <MilestoneCelebration
         visible={celebration?.kind === 'milestone'}
