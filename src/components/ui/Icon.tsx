@@ -1,4 +1,5 @@
 import { Activity, BookOpen, Brain, CalendarDays, ChartColumn, Check, Circle, Clock, Coffee, Droplet, Dumbbell, Flame, Footprints, Heart, Home, Leaf, ListTodo, Minus, Moon, Music, Pencil, Plus, Settings, Star, Sun, Trophy, X, Zap } from 'lucide-react-native';
+import { createElement } from 'react';
 import { Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
 import { ColorToken } from '@/theme/types';
@@ -56,5 +57,5 @@ export function Icon({ name, size = 20, color = 'textPrimary' }: Props) {
     );
   }
 
-  return <View testID="habit-icon">{glyph({ size, color: resolvedColor })}</View>;
+  return <View testID="habit-icon">{createElement(glyph, { size, color: resolvedColor })}</View>;
 }
