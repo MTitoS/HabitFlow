@@ -142,6 +142,19 @@ function createRecordRepository(store: DataStore): RecordRepository {
       const without = all.filter((r) => !(r.habitId === habitId && r.date === dateKey));
       await store.writeTable(T_RECORDS, [...without, next]);
     },
+    async setPending(habitId, dateKey, now) {
+      if (toDateKey(now) !== dateKey) {
+        throw new Error('record_write_past_date');
+      }
+      const existing = await find(habitId, dateKey);
+      if (!existing || existing.status !== 'completed') {
+        throw new Error('record_conflict');
+      }
+      const next = pendingRecord(habitId, dateKey);
+      const all = await store.readTable<HabitRecord>(T_RECORDS);
+      const without = all.filter((r) => !(r.habitId === habitId && r.date === dateKey));
+      await store.writeTable(T_RECORDS, [...without, next]);
+    },
     async ensurePendings(habitId, dateKeys, now) {
       const today = toDateKey(now);
       const all = await store.readTable<HabitRecord>(T_RECORDS);

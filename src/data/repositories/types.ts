@@ -19,6 +19,7 @@ export interface RecordRepository {
   forHabit(habitId: string): Promise<HabitRecord[]>;
   setCompleted(habitId: string, dateKey: string, now: Date, value?: number): Promise<void>;
   setSkipped(habitId: string, dateKey: string, now: Date): Promise<void>;
+  setPending(habitId: string, dateKey: string, now: Date): Promise<void>;
   ensurePendings(habitId: string, dateKeys: string[], now: Date): Promise<void>;
   clearForHabit(habitId: string): Promise<void>;
 }

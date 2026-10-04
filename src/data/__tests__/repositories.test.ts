@@ -77,6 +77,51 @@ describe('repositories write contract', () => {
     expect(all[0].status).toBe('skipped');
   });
 
+  it('toggle: setPending reverts a completed record to pending (same day, single record)', async () => {
+    const { repos, habit } = await setup();
+    await repos.records.setCompleted(habit.id, today, now);
+    await repos.records.setPending(habit.id, today, now);
+    const all = await repos.records.forHabit(habit.id);
+    expect(all).toHaveLength(1);
+    expect(all[0].id).toBe(`${habit.id}__${today}`);
+    expect(all[0].status).toBe('pending');
+  });
+
+  it('toggle: refuses to setPending a past date (append-only intact)', async () => {
+    const { repos, habit } = await setup();
+    await repos.records.setCompleted(habit.id, today, now);
+    await expect(repos.records.setPending(habit.id, yesterday, now)).rejects.toThrow(
+      'record_write_past_date',
+    );
+  });
+
+  it('toggle: refuses to setPending when record is not completed', async () => {
+    const { repos, habit } = await setup();
+    await expect(repos.records.setPending(habit.id, today, now)).rejects.toThrow('record_conflict');
+    await repos.records.setSkipped(habit.id, today, now);
+    await expect(repos.records.setPending(habit.id, today, now)).rejects.toThrow('record_conflict');
+  });
+
+  it('toggle: completed -> pending -> completed transitions roundtrip cleanly', async () => {
+    const { repos, habit } = await setup();
+    await repos.records.setCompleted(habit.id, today, now);
+    await repos.records.setPending(habit.id, today, now);
+    expect((await repos.records.forHabit(habit.id))[0].status).toBe('pending');
+    await repos.records.setCompleted(habit.id, today, now);
+    const final = await repos.records.forHabit(habit.id);
+    expect(final).toHaveLength(1);
+    expect(final[0].status).toBe('completed');
+  });
+
+  it('toggle: skip credit stays untouched by record toggling', async () => {
+    const { repos, habit } = await setup();
+    const before = await repos.skipCredit.get();
+    await repos.records.setCompleted(habit.id, today, now);
+    await repos.records.setPending(habit.id, today, now);
+    const after = await repos.skipCredit.get();
+    expect(after.balance).toBe(before.balance);
+  });
+
   it('skip credit is a singleton with fixed id', async () => {
     const { repos } = await setup();
     const first = await repos.skipCredit.get();

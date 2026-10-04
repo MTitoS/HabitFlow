@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { AppScaffold } from '@/components/layout/AppScaffold';
 import { TodayProgress } from '@/components/feature/TodayProgress';
 import { HabitRow } from '@/components/feature/HabitRow';
+import { CheckboxState } from '@/components/feature/HabitCheckbox';
 import { EmptyState, ErrorState } from '@/components/feature/EmptyState';
 import { todayKey } from '@/domain/date/dateUtils';
 import { groupHabitsByRoutine, scheduledForDay } from '@/domain/routine/group';
@@ -82,15 +83,21 @@ function TodayBody() {
   const totalToday = scheduledToday.length;
   const percent = totalToday > 0 ? completedToday / totalToday : 0;
 
-  const completeHabit = async (habit: Habit) => {
+  const toggleHabit = async (habit: Habit, currentState: CheckboxState) => {
     const now = new Date();
     try {
+      if (currentState === 'completed') {
+        await repos.records.setPending(habit.id, todayKey(now), now);
+        await triggerSuccess();
+        showToast('info', `${habit.name} marcado como não feito`);
+        return;
+      }
       await repos.records.setCompleted(habit.id, todayKey(now), now);
       await triggerSuccess();
       showToast('success', `${habit.name} concluído`);
       await maybeCelebrate(now);
     } catch {
-      showToast('error', 'Não foi possível completar agora');
+      showToast('error', 'Não foi possível atualizar agora');
     }
   };
 
@@ -165,7 +172,12 @@ function TodayBody() {
                     key={habit.id}
                     habit={habit}
                     state={state}
-                    onToggle={() => void completeHabit(habit)}
+                    skipDisabled={!skipCredit || skipCredit.balance === 0}
+                    onToggle={
+                      state === 'pending' || state === 'completed'
+                        ? () => void toggleHabit(habit, state)
+                        : undefined
+                    }
                     onSkip={state === 'pending' ? () => void skipHabit(habit) : undefined}
                   />
                 );

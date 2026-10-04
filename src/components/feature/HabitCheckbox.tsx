@@ -1,18 +1,19 @@
-import { Pressable, StyleSheet, Text as RNText, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
 import { colorOf } from '@/theme/tokens';
 import { Habit } from '@/domain/habit/model';
+import { Icon } from '@/components/ui/Icon';
 
 export type CheckboxState = 'pending' | 'completed' | 'skipped' | 'missed';
 
 const STATUS_META: Record<
   CheckboxState,
-  { symbol: string; token: 'success' | 'accent' | 'danger' | 'textMuted'; label: string }
+  { icon: string | null; label: string; token: 'success' | 'accent' | 'danger' }
 > = {
-  completed: { symbol: '✓', token: 'success', label: 'completo' },
-  skipped: { symbol: '—', token: 'accent', label: 'pulado' },
-  missed: { symbol: '✕', token: 'danger', label: 'perdido' },
-  pending: { symbol: '○', token: 'textMuted', label: 'pendente' },
+  completed: { icon: 'check', label: 'concluído', token: 'success' },
+  skipped: { icon: 'minus', label: 'pulado', token: 'accent' },
+  missed: { icon: 'x', label: 'perdido', token: 'danger' },
+  pending: { icon: null, label: 'pendente', token: 'success' },
 };
 
 interface Props {
@@ -23,10 +24,23 @@ interface Props {
   size?: number;
 }
 
-export function HabitCheckbox({ habit, state, onToggle, disabled = false, size = 44 }: Props) {
+export function HabitCheckbox({ habit, state, onToggle, disabled = false, size = 52 }: Props) {
   const theme = useTheme();
   const meta = STATUS_META[state];
-  const symbolColor = colorOf(theme.scheme, meta.token);
+  const isPending = state === 'pending';
+  const isCompleted = state === 'completed';
+
+  const borderColor = isPending ? colorOf(theme.scheme, 'border') : colorOf(theme.scheme, meta.token);
+  const backgroundColor = isCompleted ? colorOf(theme.scheme, 'success') : 'transparent';
+  const symbolColor = isCompleted ? '#FFFFFF' : borderColor;
+
+  const label = onToggle
+    ? isPending
+      ? `${habit.name}: marcar como concluído`
+      : isCompleted
+        ? `${habit.name}: desfazer marcação`
+        : `${habit.name}: ${meta.label}`
+    : `${habit.name}: ${meta.label}`;
 
   const content = (
     <View
@@ -36,23 +50,19 @@ export function HabitCheckbox({ habit, state, onToggle, disabled = false, size =
           width: size,
           height: size,
           borderRadius: size / 2,
-          borderColor: state === 'pending' ? colorOf(theme.scheme, 'border') : symbolColor,
-          backgroundColor: state === 'pending' ? colorOf(theme.scheme, 'surface') : 'transparent',
+          borderColor,
+          backgroundColor,
           opacity: disabled ? 0.5 : 1,
         },
       ]}
     >
-      <RNText style={[styles.symbol, { color: symbolColor, fontSize: size * 0.5 }]}>
-        {meta.symbol}
-      </RNText>
+      {meta.icon && !isPending ? <Icon name={meta.icon} size={size * 0.5} color={symbolColor} /> : null}
     </View>
   );
 
-  const a11yLabel = `${habit.name}: ${meta.label}`;
-
   if (!onToggle) {
     return (
-      <View accessibilityLabel={a11yLabel} accessible>
+      <View accessibilityLabel={label} accessible>
         {content}
       </View>
     );
@@ -61,11 +71,12 @@ export function HabitCheckbox({ habit, state, onToggle, disabled = false, size =
   return (
     <Pressable
       accessibilityRole="checkbox"
-      accessibilityLabel={a11yLabel}
-      accessibilityState={{ checked: state === 'completed', disabled }}
+      accessibilityLabel={label}
+      accessibilityState={{ checked: isCompleted, disabled }}
       disabled={disabled}
       onPress={onToggle}
       hitSlop={8}
+      style={({ pressed }) => [pressed && !disabled && styles.pressed]}
     >
       {content}
     </Pressable>
@@ -78,7 +89,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  symbol: {
-    fontWeight: '700',
+  pressed: {
+    transform: [{ scale: 0.94 }],
+    opacity: 0.9,
   },
 });

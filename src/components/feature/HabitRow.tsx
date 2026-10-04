@@ -4,6 +4,7 @@ import { spacing } from '@/theme/spacing';
 import { Habit } from '@/domain/habit/model';
 import { HabitIcon } from '@/components/feature/HabitIcon';
 import { HabitCheckbox, CheckboxState } from '@/components/feature/HabitCheckbox';
+import { Icon } from '@/components/ui/Icon';
 import { frequencyLabel } from '@/utils/frequency';
 
 interface Props {
@@ -11,9 +12,10 @@ interface Props {
   state: CheckboxState;
   onToggle?: () => void;
   onSkip?: () => void;
+  skipDisabled?: boolean;
 }
 
-export function HabitRow({ habit, state, onToggle, onSkip }: Props) {
+export function HabitRow({ habit, state, onToggle, onSkip, skipDisabled = false }: Props) {
   const theme = useTheme();
   return (
     <View
@@ -37,19 +39,24 @@ export function HabitRow({ habit, state, onToggle, onSkip }: Props) {
         </View>
       </View>
       <View style={styles.actions}>
-        {state === 'pending' && onSkip ? (
+        <HabitCheckbox habit={habit} state={state} onToggle={onToggle} />
+        {state === 'pending' ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={`Pular ${habit.name} (usar 1 crédito)`}
+            accessibilityState={{ disabled: skipDisabled }}
+            disabled={skipDisabled}
             onPress={onSkip}
-            hitSlop={6}
+            hitSlop={8}
+            style={({ pressed }) => [
+              styles.skipButton,
+              skipDisabled && styles.skipDisabled,
+              pressed && !skipDisabled && styles.skipPressed,
+            ]}
           >
-            <RNText style={{ color: theme.color('accent'), fontSize: 13, fontWeight: '600' }}>
-              pular
-            </RNText>
+            <Icon name="circleSlash2" size={22} color={skipDisabled ? 'textMuted' : 'accent'} />
           </Pressable>
         ) : null}
-        <HabitCheckbox habit={habit} state={state} onToggle={onToggle} />
       </View>
     </View>
   );
@@ -79,5 +86,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
+  },
+  skipButton: {
+    marginLeft: spacing.xs,
+    padding: 4,
+  },
+  skipDisabled: {
+    opacity: 0.35,
+  },
+  skipPressed: {
+    opacity: 0.6,
+    transform: [{ scale: 0.92 }],
   },
 });
