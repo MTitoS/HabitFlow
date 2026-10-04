@@ -35,7 +35,7 @@ export function Card({ children, variant = 'default', onPress, style }: Props) {
         style={({ pressed }) => [
           styles.base,
           themedStyle,
-          pressed && variant !== 'disabled' ? styles.pressed : null,
+          pressed && variant !== 'disabled' && { backgroundColor: theme.color('surfacePressed') },
           style,
         ]}
       >
@@ -54,8 +54,5 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     borderWidth: 1,
     padding: spacing.lg,
-  },
-  pressed: {
-    opacity: 0.9,
   },
 });

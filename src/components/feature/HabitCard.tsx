@@ -38,7 +38,7 @@ export function HabitCard({ habit, streak, percent, onPress }: Props) {
         </View>
         <HabitStreak days={habit.type === 'binary' ? streak : streak} />
       </View>
-      <View style={[styles.track, { backgroundColor: theme.color('surfaceElevated') }]}>
+      <View style={[styles.track, { backgroundColor: theme.color('progressTrack') }]}>
         <View
           style={[styles.fill, { width: barWidth, backgroundColor: theme.color(habit.color) }]}
         />

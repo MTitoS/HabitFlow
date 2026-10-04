@@ -14,7 +14,7 @@ export function MilestoneCelebration({ visible, titles, onClose }: Props) {
   const theme = useTheme();
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={styles.backdrop}>
+      <View style={[styles.backdrop, { backgroundColor: theme.color('overlay') }]}>
         <View style={[styles.card, { backgroundColor: theme.color('surface'), borderColor: theme.color('border') }]}>
           <RNText style={styles.emoji}>🏆</RNText>
           <RNText style={[styles.title, { color: theme.color('textPrimary') }]}>
@@ -35,7 +35,6 @@ export function MilestoneCelebration({ visible, titles, onClose }: Props) {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.xxxl,

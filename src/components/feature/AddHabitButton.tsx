@@ -44,13 +44,13 @@ export function AddHabitButton() {
         style={({ pressed }) => [
           styles.desktopButton,
           {
-            backgroundColor: theme.color('primary'),
+            backgroundColor: theme.color('primaryEmphasis'),
             opacity: pressed ? 0.85 : 1,
           },
         ]}
       >
-        <Icon name="plus" size={16} color="#FFFFFF" />
-        <RNText style={styles.desktopLabel}>Novo hábito</RNText>
+        <Icon name="plus" size={16} color="onPrimary" />
+        <RNText style={[styles.desktopLabel, { color: theme.color('onPrimary') }]}>Novo hábito</RNText>
       </Pressable>
     );
   }
@@ -62,7 +62,7 @@ export function AddHabitButton() {
       style={[
         styles.fabWrap,
         {
-          backgroundColor: theme.color('secondary'),
+          backgroundColor: theme.color('primaryEmphasis'),
           bottom: insets.bottom + spacing.huge + 48,
           transform: [{ scale }],
         },
@@ -76,7 +76,7 @@ export function AddHabitButton() {
         onPressOut={pressOut}
         style={styles.fabPress}
       >
-        <Icon name="plus" size={26} color="#FFFFFF" />
+        <Icon name="plus" size={26} color="onPrimary" />
       </Pressable>
     </Animated.View>
   );
@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   desktopLabel: {
-    color: '#FFFFFF',
     fontFamily: 'Inter_600SemiBold',
     fontSize: 14,
   },

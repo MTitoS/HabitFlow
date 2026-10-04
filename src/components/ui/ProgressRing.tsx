@@ -15,7 +15,7 @@ export function ProgressRing({
   progress,
   size = 96,
   strokeWidth = 8,
-  color = 'primary',
+  color = 'progressFill',
   label,
 }: Props) {
   const theme = useTheme();
@@ -43,7 +43,7 @@ export function ProgressRing({
           height: size,
           borderRadius: size / 2,
           position: 'absolute',
-          backgroundColor: theme.color('surfaceElevated'),
+          backgroundColor: theme.color('surface'),
           borderWidth: 1,
           borderColor: theme.color('border'),
         }}
@@ -55,7 +55,7 @@ export function ProgressRing({
         circumference={circumference}
         dash={dash}
         fill={theme.color(color)}
-        track={theme.color('border')}
+        track={theme.color('progressTrack')}
       />
     </View>
   );

@@ -17,17 +17,17 @@ interface Props {
 }
 
 const BACKGROUND: Record<ButtonVariant, ColorToken> = {
-  primary: 'primary',
+  primary: 'primaryEmphasis',
   secondary: 'secondary',
   ghost: 'surfaceElevated',
-  danger: 'danger',
+  danger: 'dangerSolid',
 };
 
 const PRESSED: Record<ButtonVariant, ColorToken> = {
-  primary: 'secondary',
-  secondary: 'primary',
+  primary: 'primaryPressed',
+  secondary: 'secondary',
   ghost: 'border',
-  danger: 'danger',
+  danger: 'dangerSolid',
 };
 
 export function Button({
@@ -43,8 +43,9 @@ export function Button({
 
   const foreground = (): string => {
     if (variant === 'ghost') return theme.color('textPrimary');
-    if (isBlocked) return theme.color('textMuted');
-    return '#FFFFFF';
+    if (isBlocked) return theme.color('textDisabled');
+    if (variant === 'secondary') return theme.color('onSecondary');
+    return theme.color('onPrimary');
   };
 
   return (
@@ -58,7 +59,9 @@ export function Button({
         styles.base,
         {
           backgroundColor: isBlocked
-            ? theme.color('surfaceElevated')
+            ? variant === 'primary' || variant === 'danger'
+              ? theme.color('primaryDisabled')
+              : theme.color('surfaceElevated')
             : theme.color(pressed ? PRESSED[variant] : BACKGROUND[variant]),
         },
       ]}

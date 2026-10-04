@@ -82,7 +82,7 @@ export default function HabitDetailScreen() {
             const symbol =
               status === 'completed' ? '✓' : status === 'skipped' ? '—' : status === 'missed' ? '✕' : '○';
             const tokenColor =
-              status === 'completed' ? theme.color('success') : status === 'skipped' ? theme.color('accent') : status === 'missed' ? theme.color('danger') : theme.color('textMuted');
+              status === 'completed' ? theme.color('successBright') : status === 'skipped' ? theme.color('accent') : status === 'missed' ? theme.color('dangerBright') : theme.color('textMuted');
             return (
               <View key={key} style={styles.weekCell}>
                 <RNText style={{ color: tokenColor, fontSize: 16 }}>{symbol}</RNText>

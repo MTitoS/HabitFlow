@@ -29,10 +29,27 @@ export function HabitCheckbox({ habit, state, onToggle, disabled = false, size =
   const meta = STATUS_META[state];
   const isPending = state === 'pending';
   const isCompleted = state === 'completed';
+  const isSkipped = state === 'skipped';
 
-  const borderColor = isPending ? colorOf(theme.scheme, 'border') : colorOf(theme.scheme, meta.token);
-  const backgroundColor = isCompleted ? colorOf(theme.scheme, 'success') : 'transparent';
-  const symbolColor = isCompleted ? '#FFFFFF' : borderColor;
+  const borderColor = isSkipped
+    ? colorOf(theme.scheme, 'skipDisabledBorder')
+    : isPending
+      ? colorOf(theme.scheme, 'checkboxPendingBorder')
+      : colorOf(theme.scheme, 'border');
+  const backgroundColor = isCompleted
+    ? colorOf(theme.scheme, 'success')
+    : isSkipped
+      ? disabled
+        ? colorOf(theme.scheme, 'skipDisabledFill')
+        : colorOf(theme.scheme, 'skipFill')
+      : 'transparent';
+  const symbolColor = isCompleted
+    ? colorOf(theme.scheme, 'onSuccess')
+    : isSkipped
+      ? disabled
+        ? colorOf(theme.scheme, 'textMuted')
+        : colorOf(theme.scheme, 'skipGlyph')
+      : borderColor;
 
   const label = onToggle
     ? isPending
@@ -54,6 +71,7 @@ export function HabitCheckbox({ habit, state, onToggle, disabled = false, size =
           borderRadius: size / 2,
           borderColor,
           backgroundColor,
+          borderStyle: isSkipped && disabled ? 'dashed' : 'solid',
           opacity: disabled ? 0.5 : 1,
         },
       ]}

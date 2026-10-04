@@ -34,12 +34,12 @@ export function DatePicker({ label, value, onChange }: Props) {
               style={[
                 styles.cell,
                 {
-                  backgroundColor: selected ? theme.color('primary') : theme.color('surface'),
-                  borderColor: selected ? theme.color('primary') : theme.color('border'),
+                  backgroundColor: selected ? theme.color('primaryEmphasis') : theme.color('surface'),
+                  borderColor: selected ? theme.color('primaryEmphasis') : theme.color('border'),
                 },
               ]}
             >
-              <RNText style={{ color: selected ? '#FFFFFF' : theme.color('textPrimary') }}>
+              <RNText style={{ color: selected ? theme.color('onPrimary') : theme.color('textPrimary') }}>
                 {day}
               </RNText>
             </Pressable>

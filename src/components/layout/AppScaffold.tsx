@@ -35,7 +35,7 @@ export function AppScaffold({ title, children, actions }: Props) {
     >
       <View style={[styles.row, isDesktop && styles.desktopRow]}>
         {isDesktop ? (
-          <View style={[styles.sidebar, { backgroundColor: theme.color('surface') }]}>
+          <View style={[styles.sidebar, { backgroundColor: theme.color('surface'), borderRightColor: theme.color('border') }]}>
             <View style={styles.brand}>
               <RNText style={{ fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 24, color: theme.color('textPrimary') }}>
                 HabitFlow
@@ -54,14 +54,14 @@ export function AppScaffold({ title, children, actions }: Props) {
                     style={[
                       styles.sideItem,
                       {
-                        backgroundColor: active ? theme.color('primary') : 'transparent',
+                        backgroundColor: active ? theme.color('primaryEmphasis') : 'transparent',
                       },
                     ]}
                   >
-                    <Icon name={item.icon} size={18} color={active ? undefined : 'textSecondary'} />
+                    <Icon name={item.icon} size={18} color={active ? 'onPrimary' : 'textSecondary'} />
                     <RNText
                       style={{
-                        color: active ? '#FFFFFF' : theme.color('textSecondary'),
+                        color: active ? theme.color('onPrimary') : theme.color('textSecondary'),
                         fontFamily: 'Inter_500Medium',
                         fontSize: 14,
                       }}
@@ -131,33 +131,33 @@ function BottomNav({
       {NAV_ITEMS.map((item) => {
         const active = activeFor(item.match);
         return (
-          <Pressable
-            key={item.href}
-            accessibilityRole="tab"
-            accessibilityLabel={item.label}
-            accessibilityState={{ selected: active }}
-            hitSlop={4}
-            onPress={() => navigate(item.href)}
-            style={[styles.tab, { borderTopWidth: 2, borderTopColor: active ? theme.color('primary') : 'transparent' }]}
-          >
-            <View
-              style={[
-                styles.tabIcon,
-                { backgroundColor: active ? theme.color('primary') : 'transparent' },
-              ]}
+<Pressable
+              key={item.href}
+              accessibilityRole="tab"
+              accessibilityLabel={item.label}
+              accessibilityState={{ selected: active }}
+              hitSlop={4}
+              onPress={() => navigate(item.href)}
+              style={[styles.tab, { borderTopWidth: 2, borderTopColor: active ? theme.color('borderStrong') : 'transparent' }]}
             >
-              <Icon name={item.icon} size={20} color={active ? undefined : 'textMuted'} />
-            </View>
-            <RNText
-              style={{
-                fontSize: 10,
-                color: active ? theme.color('primary') : theme.color('textMuted'),
-                fontFamily: 'Inter_500Medium',
-              }}
-            >
-              {item.label}
-            </RNText>
-          </Pressable>
+              <View
+                style={[
+                  styles.tabIcon,
+                  { backgroundColor: active ? theme.color('navActivePill') : 'transparent' },
+                ]}
+              >
+                <Icon name={item.icon} size={20} color={active ? 'navActiveIcon' : 'navInactive'} />
+              </View>
+              <RNText
+                style={{
+                  fontSize: 10,
+                  color: active ? theme.color('navActiveLabel') : theme.color('navInactive'),
+                  fontFamily: 'Inter_500Medium',
+                }}
+              >
+                {item.label}
+              </RNText>
+            </Pressable>
         );
       })}
     </View>
@@ -178,7 +178,6 @@ const styles = StyleSheet.create({
   sidebar: {
     width: 220,
     borderRightWidth: 1,
-    borderRightColor: '#E3E6EE',
     paddingVertical: spacing.xl,
   },
   brand: {

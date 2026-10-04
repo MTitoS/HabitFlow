@@ -36,7 +36,7 @@ export function ColorPicker({ label, value, onChange }: Props) {
               ]}
             >
               {selected ? (
-                <RNText style={styles.check}>✓</RNText>
+                <RNText style={[styles.check, { color: theme.color('onPrimary') }]}>✓</RNText>
               ) : null}
             </Pressable>
           );
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   check: {
-    color: '#FFFFFF',
     fontSize: 18,
   },
 });

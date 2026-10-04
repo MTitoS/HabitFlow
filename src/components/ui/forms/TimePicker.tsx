@@ -45,12 +45,12 @@ export function TimePicker({ label, value, onChange, allowNone = true }: Props) 
             style={[
               styles.chip,
               {
-                backgroundColor: !value ? theme.color('primary') : theme.color('surface'),
-                borderColor: !value ? theme.color('primary') : theme.color('border'),
+                backgroundColor: !value ? theme.color('primaryEmphasis') : theme.color('surface'),
+                borderColor: !value ? theme.color('primaryEmphasis') : theme.color('border'),
               },
             ]}
           >
-            <RNText style={{ color: !value ? '#FFFFFF' : theme.color('textPrimary') }}>
+            <RNText style={{ color: !value ? theme.color('onPrimary') : theme.color('textPrimary') }}>
               Sem horário
             </RNText>
           </Pressable>
@@ -65,12 +65,12 @@ export function TimePicker({ label, value, onChange, allowNone = true }: Props) 
             style={[
               styles.chip,
               {
-                backgroundColor: value === time ? theme.color('primary') : theme.color('surface'),
-                borderColor: value === time ? theme.color('primary') : theme.color('border'),
+                backgroundColor: value === time ? theme.color('primaryEmphasis') : theme.color('surface'),
+                borderColor: value === time ? theme.color('primaryEmphasis') : theme.color('border'),
               },
             ]}
           >
-            <RNText style={{ color: value === time ? '#FFFFFF' : theme.color('textPrimary') }}>
+            <RNText style={{ color: value === time ? theme.color('onPrimary') : theme.color('textPrimary') }}>
               {time}
             </RNText>
           </Pressable>

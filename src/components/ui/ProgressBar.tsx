@@ -10,7 +10,7 @@ interface Props {
   height?: number;
 }
 
-export function ProgressBar({ progress, color = 'primary', label, height = 8 }: Props) {
+export function ProgressBar({ progress, color = 'progressFill', label, height = 8 }: Props) {
   const theme = useTheme();
   const clamped = Math.max(0, Math.min(1, progress));
 
@@ -27,7 +27,7 @@ export function ProgressBar({ progress, color = 'primary', label, height = 8 }: 
       }}
       style={[
         styles.track,
-        { height, backgroundColor: theme.color('surfaceElevated'), borderColor: theme.color('border') },
+        { height, backgroundColor: theme.color('progressTrack') },
       ]}
     >
       <View
@@ -43,7 +43,6 @@ export function ProgressBar({ progress, color = 'primary', label, height = 8 }: 
 const styles = StyleSheet.create({
   track: {
     borderRadius: radius.pill,
-    borderWidth: 1,
     overflow: 'hidden',
   },
   fill: {

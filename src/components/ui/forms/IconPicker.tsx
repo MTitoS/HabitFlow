@@ -42,12 +42,12 @@ export function IconPicker({ label, value, onChange }: Props) {
               style={[
                 styles.swatch,
                 {
-                  backgroundColor: selected ? theme.color('secondary') : theme.color('surface'),
-                  borderColor: selected ? theme.color('secondary') : theme.color('border'),
+                  backgroundColor: selected ? theme.color('primaryEmphasis') : theme.color('surface'),
+                  borderColor: selected ? theme.color('primaryEmphasis') : theme.color('border'),
                 },
               ]}
             >
-              <Icon name={name} size={22} color={selected ? '#FFFFFF' : 'secondary'} />
+              <Icon name={name} size={22} color={selected ? 'onPrimary' : 'secondary'} />
             </Pressable>
           );
         })}

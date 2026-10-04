@@ -10,10 +10,10 @@ function dayStyle(point: DayPoint, theme: AppTheme): { bg: string; fg: string; s
     return { bg: 'transparent', fg: theme.color('textMuted'), symbol: '' };
   }
   if (point.completed === point.scheduled) {
-    return { bg: theme.color('success'), fg: '#fff', symbol: '✓' };
+    return { bg: theme.color('calendarDoneFill'), fg: theme.color('calendarDoneFg'), symbol: '✓' };
   }
   if (point.completed > 0) {
-    return { bg: theme.color('accent'), fg: '#fff', symbol: '◐' };
+    return { bg: theme.color('calendarSkipFill'), fg: theme.color('calendarSkipFg'), symbol: '◐' };
   }
   return { bg: theme.color('surfaceElevated'), fg: theme.color('textPrimary'), symbol: '○' };
 }
@@ -62,7 +62,7 @@ return (
                 accessibilityLabel={`${dateKey}: ${point.completed}/${point.scheduled} concluído`}
                 style={[
                   styles.cell,
-                  isToday && { borderWidth: 1, borderColor: theme.color('primary'), borderRadius: radius.sm },
+                  isToday && { borderWidth: 1, borderColor: theme.color('calendarTodayRing'), borderRadius: radius.sm },
                 ]}
               >
               <View style={[styles.day, { backgroundColor: meta.bg }]}>

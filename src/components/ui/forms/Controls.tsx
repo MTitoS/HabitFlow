@@ -25,12 +25,12 @@ export function Checkbox({ label, checked, onChange, disabled = false }: Props) 
         style={[
           styles.box,
           {
-            backgroundColor: checked ? theme.color('primary') : theme.color('surface'),
-            borderColor: checked ? theme.color('primary') : theme.color('border'),
+            backgroundColor: checked ? theme.color('primaryEmphasis') : theme.color('surface'),
+            borderColor: checked ? theme.color('primaryEmphasis') : theme.color('border'),
           },
         ]}
       >
-        <RNText style={[styles.check, { color: checked ? '#FFFFFF' : 'transparent' }]}>
+        <RNText style={[styles.check, { color: checked ? theme.color('onPrimary') : 'transparent' }]}>
           ✓
         </RNText>
       </View>
@@ -61,12 +61,12 @@ export function Radio({ label, checked, onChange, disabled = false }: Props) {
         style={[
           styles.radio,
           {
-            borderColor: checked ? theme.color('primary') : theme.color('border'),
+            borderColor: checked ? theme.color('primaryEmphasis') : theme.color('border'),
             backgroundColor: theme.color('surface'),
           },
         ]}
       >
-        {checked ? <View style={[styles.radioDot, { backgroundColor: theme.color('primary') }]} /> : null}
+        {checked ? <View style={[styles.radioDot, { backgroundColor: theme.color('primaryEmphasis') }]} /> : null}
       </View>
       <RNText style={[styles.label, { color: theme.color('textPrimary') }]}>{label}</RNText>
     </Pressable>
@@ -88,7 +88,7 @@ export function Switch({ label, checked, onChange, disabled = false }: Props) {
         style={[
           styles.switchTrack,
           {
-            backgroundColor: checked ? theme.color('primary') : theme.color('border'),
+            backgroundColor: checked ? theme.color('primaryEmphasis') : theme.color('progressTrack'),
           },
         ]}
       >
@@ -96,7 +96,7 @@ export function Switch({ label, checked, onChange, disabled = false }: Props) {
           style={[
             styles.switchThumb,
             {
-              backgroundColor: '#FFFFFF',
+              backgroundColor: theme.color('onPrimary'),
               transform: [{ translateX: checked ? 18 : 0 }],
             },
           ]}

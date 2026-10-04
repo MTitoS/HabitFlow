@@ -44,16 +44,16 @@ export function Select<T extends string | number>({
                 styles.option,
                 {
                   backgroundColor: selected
-                    ? theme.color('primary')
+                    ? theme.color('primaryEmphasis')
                     : theme.color('surface'),
-                  borderColor: selected ? theme.color('primary') : theme.color('border'),
+                  borderColor: selected ? theme.color('primaryEmphasis') : theme.color('border'),
                 },
               ]}
             >
               <RNText
                 style={[
                   styles.optionLabel,
-                  { color: selected ? '#FFFFFF' : theme.color('textPrimary') },
+                  { color: selected ? theme.color('onPrimary') : theme.color('textPrimary') },
                 ]}
               >
                 {option.icon ? `${option.icon} ` : ''}

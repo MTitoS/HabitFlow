@@ -37,11 +37,11 @@ export default function CalendarScreen() {
       const symbol = status === 'completed' ? '✓' : status === 'skipped' ? '—' : status === 'missed' ? '✕' : '○';
       const color =
         status === 'completed'
-          ? theme.color('success')
+          ? theme.color('successBright')
           : status === 'skipped'
             ? theme.color('accent')
             : status === 'missed'
-              ? theme.color('danger')
+              ? theme.color('dangerBright')
               : theme.color('textMuted');
       if (status) row.push({ habitName: habit.name, symbol, color });
     }
@@ -138,16 +138,18 @@ function MonthGrid({
         const bg =
           point && point.scheduled > 0
             ? point.completed === point.scheduled
-              ? theme.color('success')
+              ? theme.color('calendarDoneFill')
               : point.completed > 0
-                ? theme.color('accent')
-                : theme.color('surfaceElevated')
+                ? theme.color('calendarSkipFill')
+                : 'transparent'
             : 'transparent';
         const fg =
           point && point.scheduled > 0
-            ? point.completed > 0
-              ? '#fff'
-              : theme.color('textPrimary')
+            ? point.completed === point.scheduled
+              ? theme.color('calendarDoneFg')
+              : point.completed > 0
+                ? theme.color('calendarSkipFg')
+                : theme.color('textSecondary')
             : theme.color('textMuted');
         const isToday = dateKey === today;
         return (
@@ -156,7 +158,11 @@ function MonthGrid({
             accessibilityRole="button"
             accessibilityLabel={`${dateKey}${point && point.scheduled > 0 ? `: ${point.completed}/${point.scheduled}` : ''}`}
             onPress={() => onSelect(dateKey)}
-            style={[styles.cell, isToday && { borderWidth: 1, borderColor: theme.color('primary'), borderRadius: 8 }]}
+            style={[
+              styles.cell,
+              isToday && { borderWidth: 2, borderColor: theme.color('calendarTodayRing'), borderRadius: 8 },
+              point && point.scheduled > 0 && point.completed === 0 && { borderWidth: 1, borderColor: theme.color('calendarPendingBorder'), borderRadius: 8 },
+            ]}
           >
             <View style={[styles.day, { backgroundColor: bg }]}>
               <RNText style={{ color: fg, fontSize: 12, fontWeight: '600' }}>
