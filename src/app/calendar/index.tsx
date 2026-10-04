@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/feature/EmptyState';
 import { monthlySeries } from '@/domain/stats/aggregate';
 import { monthKey, todayKey } from '@/domain/date/dateUtils';
+import { buildMonthGrid } from '@/domain/date/monthGrid';
 import { statusForView } from '@/domain/stats/materializeMissed';
 
 function shiftMonth(current: string, delta: number): string {
@@ -26,9 +27,7 @@ export default function CalendarScreen() {
   const today = todayKey(now);
 
   const byDate = new Map(series.map((p) => [p.dateKey, p]));
-  const firstDay = new Date(Number(month.slice(0, 4)), Number(month.slice(5, 7)) - 1, 1);
-  const daysInMonth = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0).getDate();
-  const leading = firstDay.getDay();
+  const grid = buildMonthGrid(Number(month.slice(0, 4)), Number(month.slice(5, 7)) - 1);
 
   const dayStatus = (dateKey: string) => {
     const active = habits.filter((h) => !h.archivedAt);
@@ -69,9 +68,7 @@ export default function CalendarScreen() {
       </View>
 
       <MonthGrid
-        month={month}
-        daysInMonth={daysInMonth}
-        leading={leading}
+        grid={grid}
         byDate={byDate}
         today={today}
         onSelect={(dateKey) => setSelectedDay(dateKey)}
@@ -104,37 +101,31 @@ export default function CalendarScreen() {
 }
 
 function MonthGrid({
-  month,
-  daysInMonth,
-  leading,
+  grid,
   byDate,
   today,
   onSelect,
 }: {
-  month: string;
-  daysInMonth: number;
-  leading: number;
+  grid: (string | null)[][];
   byDate: Map<string, { dateKey: string; scheduled: number; completed: number; percent: number; monthDay: number; weekday: string }>;
   today: string;
   onSelect: (dateKey: string) => void;
 }) {
   const theme = useTheme();
-  const cells: (string | null)[] = [
-    ...Array.from({ length: leading }, () => null),
-    ...Array.from({ length: daysInMonth }, (_, i) => `${month}-${String(i + 1).padStart(2, '0')}`),
-  ];
 
   return (
     <View style={styles.monthGrid}>
       <View style={styles.weekRow}>
-        {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((label, i) => (
+        {['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map((label, i) => (
           <RNText key={`w-${i}`} style={[styles.weekLabel, { color: theme.color('textMuted') }]}>
             {label}
           </RNText>
         ))}
       </View>
-      {cells.map((dateKey, index) => {
-        if (!dateKey) return <View key={index} style={styles.cell} />;
+      {grid.map((row, rowIndex) => (
+        <View key={`row-${rowIndex}`} style={styles.monthRow}>
+          {row.map((dateKey, index) => {
+            if (!dateKey) return <View key={`${rowIndex}-${index}`} style={styles.cell} />;
         const point = byDate.get(dateKey);
         const symbol =
           point && point.scheduled > 0
@@ -174,7 +165,9 @@ function MonthGrid({
             </View>
           </Pressable>
         );
-      })}
+          })}
+        </View>
+      ))}
     </View>
   );
 }
@@ -186,8 +179,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   monthGrid: {
+    flexDirection: 'column',
+  },
+  monthRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    width: '100%',
   },
   weekRow: {
     flexDirection: 'row',
