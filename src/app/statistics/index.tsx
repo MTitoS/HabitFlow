@@ -3,13 +3,11 @@ import { useTheme } from '@/theme/Provider';
 import { useData } from '@/data/DataProvider';
 import { AppScaffold } from '@/components/layout/AppScaffold';
 import { WeeklyChart } from '@/components/feature/dashboard/WeeklyChart';
-import { ConsistencyCalendar } from '@/components/feature/dashboard/ConsistencyCalendar';
 import { StreakCard } from '@/components/feature/dashboard/StreakCard';
 import { CompletionChart } from '@/components/feature/dashboard/CompletionChart';
 import { EmptyState } from '@/components/feature/EmptyState';
 import { ProgressRing } from '@/components/ui/ProgressRing';
 import { daySummary, monthlySeries, totals, weeklySeries } from '@/domain/stats/aggregate';
-import { monthKey, todayKey } from '@/domain/date/dateUtils';
 
 export default function StatisticsScreen() {
   const theme = useTheme();
@@ -55,7 +53,6 @@ export default function StatisticsScreen() {
 
       <WeeklyChart series={week} />
       <CompletionChart series={month} />
-      <ConsistencyCalendar monthKey={monthKey(todayKey(now))} series={month} />
     </AppScaffold>
   );
 }
