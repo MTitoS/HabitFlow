@@ -82,3 +82,17 @@ describe('HabitRow toggle + skip', () => {
     expect(onUndoSkip).not.toHaveBeenCalled();
   });
 });
+
+describe('HabitRow streak', () => {
+  it('shows the streak when provided', async () => {
+    const { getByText } = await renderRow({ streak: 5 });
+    expect(getByText('5 dias')).toBeTruthy();
+  });
+
+  it('hides the streak when absent or zero', async () => {
+    const { queryByText } = await renderRow({});
+    expect(queryByText('5 dias')).toBeNull();
+    const zero = await renderRow({ streak: 0 });
+    expect(zero.queryByText('0 dias')).toBeNull();
+  });
+});

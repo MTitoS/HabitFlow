@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { AppScaffold } from '@/components/layout/AppScaffold';
 import { TodayProgress } from '@/components/feature/TodayProgress';
 import { HabitRow } from '@/components/feature/HabitRow';
+import { HomeStreakHeader } from '@/components/feature/HomeStreakHeader';
 import { CheckboxState } from '@/components/feature/HabitCheckbox';
 import { EmptyState, ErrorState } from '@/components/feature/EmptyState';
 import { todayKey } from '@/domain/date/dateUtils';
@@ -20,6 +21,8 @@ import { Habit } from '@/domain/habit/model';
 import { computeAchievements } from '@/hooks/useAchievements';
 import { DerivedStats } from '@/domain/stats/achievements';
 import { daySummary } from '@/domain/stats/aggregate';
+import { currentStreak } from '@/domain/streak/currentStreak';
+import { phraseForDate } from '@/config/motivationalPhrases';
 import { MilestoneCelebration } from '@/components/feature/MilestoneCelebration';
 import { CelebrationOverlay } from '@/components/feature/CelebrationOverlay';
 import { HabitRecord } from '@/domain/record/model';
@@ -48,7 +51,8 @@ function TodayBody() {
   const [celebration, setCelebration] = useState<
     { kind: 'milestone'; titles: string[] } | { kind: 'all-done' } | null
   >(null);
-  const today = todayKey(new Date());
+  const now = new Date();
+  const today = todayKey(now);
 
   useEffect(() => {
     isOnboardingDone().then(setOnboardingDone);
@@ -76,6 +80,7 @@ function TodayBody() {
 
   const active = habits.filter((h) => !h.archivedAt);
   const scheduledToday = scheduledForDay(active, today);
+  const summary = daySummary(active, records, now);
 
   const completedToday = records.filter(
     (r) => r.date === today && r.status === 'completed',
@@ -154,6 +159,9 @@ function TodayBody() {
 
   return (
     <AppScaffold title="Hoje">
+      <View style={styles.header}>
+        <HomeStreakHeader streak={summary.dayStreakCurrent} phrase={phraseForDate(today)} />
+      </View>
       <View style={styles.focus}>
         <TodayProgress completed={completedToday} total={totalToday} percent={percent} />
       </View>
@@ -185,6 +193,7 @@ function TodayBody() {
                     key={habit.id}
                     habit={habit}
                     state={state}
+                    streak={currentStreak(habit, records.filter((r) => r.habitId === habit.id), now)}
                     skipDisabled={!skipCredit || skipCredit.balance === 0}
                     onToggle={
                       state === 'pending' || state === 'completed'
@@ -223,6 +232,9 @@ function TodayBody() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    marginBottom: 8,
+  },
   focus: {
     marginBottom: 4,
   },

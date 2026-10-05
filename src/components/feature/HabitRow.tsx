@@ -4,19 +4,29 @@ import { spacing } from '@/theme/spacing';
 import { Habit } from '@/domain/habit/model';
 import { HabitIcon } from '@/components/feature/HabitIcon';
 import { HabitCheckbox, CheckboxState } from '@/components/feature/HabitCheckbox';
+import { HabitStreak } from '@/components/feature/HabitStreak';
 import { Icon } from '@/components/ui/Icon';
 import { frequencyLabel } from '@/utils/frequency';
 
 interface Props {
   habit: Habit;
   state: CheckboxState;
+  streak?: number;
   onToggle?: () => void;
   onSkip?: () => void;
   onUndoSkip?: () => void;
   skipDisabled?: boolean;
 }
 
-export function HabitRow({ habit, state, onToggle, onSkip, onUndoSkip, skipDisabled = false }: Props) {
+export function HabitRow({
+  habit,
+  state,
+  streak,
+  onToggle,
+  onSkip,
+  onUndoSkip,
+  skipDisabled = false,
+}: Props) {
   const theme = useTheme();
   return (
     <View
@@ -34,9 +44,12 @@ export function HabitRow({ habit, state, onToggle, onSkip, onUndoSkip, skipDisab
           >
             {habit.name}
           </RNText>
-          <RNText style={{ color: theme.color('textMuted'), fontSize: 12 }}>
-            {frequencyLabel(habit.frequency)}
-          </RNText>
+          <View style={styles.subRow}>
+            <RNText numberOfLines={1} style={{ color: theme.color('textMuted'), fontSize: 12 }}>
+              {frequencyLabel(habit.frequency)}
+            </RNText>
+            {typeof streak === 'number' ? <HabitStreak days={streak} /> : null}
+          </View>
         </View>
       </View>
       <View style={styles.actions}>
@@ -98,6 +111,11 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     gap: 2,
+  },
+  subRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
   },
   actions: {
     flexDirection: 'row',
