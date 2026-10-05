@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 3,
-  "state_name": "implementation-c2",
+  "state": 4,
+  "state_name": "review-c2",
   "phase": "B-streak-routine-stats",
   "approved_gates": [
     {
@@ -46,7 +46,7 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-05T16:52:37.071Z",
+  "updated_at": "2026-10-05T17:07:37.445Z",
   "prior_phase": {
     "phase": "A-mvp-baseline",
     "state_reached": 5,
