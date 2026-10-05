@@ -62,3 +62,13 @@
   histórico append-only; frequência vigente (10.4 off-future).
 - **Desvios:** `sortHabits('routine')` agrupa por `routineId` (sem nova dependência de `routines`);
   a tela faz o agrupamento visual com nomes/subtítulos.
+
+## Release
+
+- Bump: `versionCode 10` / `versionName "2.0.0"` (`app.json` + `android/app/build.gradle`).
+- APK release arm64: 34.7 MB (< 50 MB), build Gradle `BUILD SUCCESSFUL`.
+- Tag `v0.2.0-c2` + GitHub release "C2 - streaks, rotina, filtros, stats"
+  (asset `HabitFlow-arm64.apk`, download anônimo HTTP 200).
+- Device verify (`adb` wireless `192.168.15.26:34263`): **deferred** — device offline no momento;
+  web export + build release OK, sem bloqueio.
+
