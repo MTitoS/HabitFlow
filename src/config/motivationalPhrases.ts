@@ -40,7 +40,6 @@ export const MOTIVATIONAL_PHRASES: MotivationalPhrase[] = [
   { text: 'Um por cento melhor todo dia.', author: 'James Clear' },
   { text: 'A repetição é a mãe do aprendizado.', author: 'James Clear' },
   { text: 'Jogue o jogo do longo prazo.', author: 'Naval Ravikant' },
-  { text: 'Aprender a construir e vender é alavancagem.', author: 'Naval Ravikant' },
   { text: 'A paz de espírito é o objetivo final.', author: 'Naval Ravikant' },
   { text: 'Seja paciente com os resultados, impaciente com as ações.', author: 'Naval Ravikant' },
   { text: 'Escolha um trabalho que você faria de graça e faça-o bem.', author: 'Naval Ravikant' },
