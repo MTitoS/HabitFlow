@@ -3,7 +3,7 @@ import { useTheme } from '@/theme/Provider';
 import { spacing } from '@/theme/spacing';
 import { Button } from '@/components/ui/Button';
 
-export type EmptyKind = 'no-habits' | 'all-done' | 'no-stats' | 'nothing-today';
+export type EmptyKind = 'no-habits' | 'all-done' | 'no-stats' | 'nothing-today' | 'no-results';
 
 const COPY: Record<EmptyKind, { emoji: string; title: string; body: string; action?: string }> = {
   'no-habits': {
@@ -26,6 +26,11 @@ const COPY: Record<EmptyKind, { emoji: string; title: string; body: string; acti
     emoji: '🌙',
     title: 'Nada programado para hoje',
     body: 'Seus hábitos de hoje aparecerão aqui.',
+  },
+  'no-results': {
+    emoji: '🔍',
+    title: 'Nenhum hábito encontrado',
+    body: 'Tente ajustar a busca ou limpar os filtros.',
   },
 };
 

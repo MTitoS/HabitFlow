@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { HabitSortMode } from '@/domain/habit/sortHabits';
 
 type ThemeOverride = 'system' | 'light' | 'dark';
 
@@ -7,6 +8,7 @@ const KEYS = {
   theme: 'habitflow:prefs:theme',
   defaults: 'habitflow:prefs:defaults',
   seen: 'habitflow:prefs:seen',
+  habitsView: 'habitflow:prefs:habitsView',
 };
 
 async function getItem(key: string): Promise<string | null> {
@@ -83,4 +85,23 @@ export async function markAchievementSeen(id: string): Promise<void> {
 
 export async function clearSeenAchievements(): Promise<void> {
   await setItem(KEYS.seen, JSON.stringify([]));
+}
+
+export interface HabitsViewPrefs {
+  mode: HabitSortMode;
+  routineFilter: string | null;
+}
+
+export async function getHabitsViewPrefs(): Promise<HabitsViewPrefs | null> {
+  const value = await getItem(KEYS.habitsView);
+  if (!value) return null;
+  try {
+    return JSON.parse(value) as HabitsViewPrefs;
+  } catch {
+    return null;
+  }
+}
+
+export async function setHabitsViewPrefs(prefs: HabitsViewPrefs): Promise<void> {
+  await setItem(KEYS.habitsView, JSON.stringify(prefs));
 }
