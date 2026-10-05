@@ -89,3 +89,10 @@
 | Estado visual | Símbolo + cor + label sempre | a11y não-só-cor (§10/§37) |
 | Web | Adapter interface; persistência real nativa | `expo-web` sem SQLite |
 | Build Android | arm64-only + NDK sem espaço + JDK21 | Debug APK nativo rápido e reproduzível |
+## Post-ship refinements (v0.1.4 - v0.1.8) — closed cycle 03-04/10/2026
+- lucide-react-native v1.51 exports icons como forwardRef objects: invocar via createElement, nunca glyph({...}) direto. Mocks de teste devem replicar o shape real (forwardRef) ou mascaram bugs de boot (v0.1.3: 3 releases crashadas ate logcat no device real revelar).
+- Debug de device sem log = guessing. adb wireless pairing resolveu: `adb pair IP:PORT CODE` + `connect IP:DEBUGPORT` (porta de pareamento != porta de debug). Cabo pode estar bloqueado por Auto Blocker; wireless e alternativa.
+- Release sem R8 (v0.1.2) e com legado packaging (v0.1.1) nao resolveram o crash — causa era JS (TypeError Icon). Trilha de isolamento: build sem minify separou R8 de JS-init; logcat do device real fechou.
+- useLegacyPackaging=true (gradle.properties) -> APK 42.5MB -> 25.7-36MB, arm64-only. Telegram limita 50MB por arquivo.
+- Retheming (v0.1.8): paleta 7 cores terra/creme do designer aplicada a AMBOS os temas, com cross-review de AA (success verde oliva derivado for light; dark warm escada L*16-36). Designer entregou tokens via 2 sessoes com script WCAG (hf_pass4.py).
+- Domain: habit so entra na agenda de datas >= createdAt (T7 anti-retroativo). Skip undo recupera credito (T6). Ambos TDD red-green.
