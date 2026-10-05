@@ -1,8 +1,8 @@
 {
   "project": "habitflow",
-  "state": 5,
-  "state_name": "knowledge-capture",
-  "phase": "A-mvp-baseline",
+  "state": 1,
+  "state_name": "discovery-c2",
+  "phase": "B-streak-routine-stats",
   "approved_gates": [
     {
       "state": 2,
@@ -30,11 +30,17 @@
     "regras avançadas reminders (múltiplos horários x frequência)"
   ],
   "artifacts": {
-    "spec": "docs/SPEC.md",
-    "plan": "docs/PLAN.md",
+    "spec": "docs/SPEC-c2.md",
+    "plan": "docs/PLAN-c2.md",
     "review": "docs/REVIEW.md",
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-05T14:18:30.836Z"
+  "updated_at": "2026-10-05T14:29:56.484Z",
+  "prior_phase": {
+    "phase": "A-mvp-baseline",
+    "state_reached": 5,
+    "completed_at": "2026-10-05T14:29:56.483Z",
+    "summary": "MVP completo 66/66, 171 testes, 8 releases v0.1.0-v0.1.8, ship aprovado por Tito"
+  }
 }
