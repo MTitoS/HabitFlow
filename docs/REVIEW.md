@@ -161,3 +161,44 @@ Nenhum.
 - Executor State 4: **APPROVED** · Data: 2026-10-03
 - Critério do RUG cumprido: `npm test` 100% verde, `tsc` e `lint` limpos, app local + web responsivo.
 - Este REVIEW substitui o anterior (State 3/D66), incorporando reavaliação §45, cross-check de plano, cobertura de regras §41, revisão de código e re-verificação prática.
+
+---
+
+# REVIEW — HabitFlow · RUG ciclo 2 (C1..C17, refinamentos fase B)
+
+Data: 2026-10-05 · Autor: executor State 3 (ciclo 2) · Ambiente: Windows, Node, Expo SDK 57, RN 0.86.
+
+## Verdict
+
+**APPROVED** — 17/17 tasks `ok`, baseline 171 testes preservado, suite total 213 verdes, `tsc`/`lint` limpos, web export OK.
+
+## Entregas
+
+- **T1** streak individual no `HabitRow` (Home); **T2** streak geral + frase fixa do dia no header da Home.
+- **T3** skip-neutro coberto nos 2 níveis (individual + geral), missed zera.
+- **T4** busca (case/acento-insensível), 3 ordenações e filtro por rotina persistidos (`prefs`).
+- **T5** `ConsistencyCalendar` removido (arquivo + imports), aba Calendário intacta.
+- **T6** `MonthView` (headline + heatmap vencido/parcial/neutro + resumo) em Estatísticas.
+
+## Invioláveis
+
+- `src/config/opens.ts` §15.1 (grant semanal) intocado.
+- `DaySummary`: campos legados `overallCurrentStreak`/`overallBestStreak` preservados; novos aditivos
+  (`dayStreakCurrent`/`dayStreakBest`) consumidos por Home/StreakCard.
+- Histórico append-only; frequência vigente (10.4 off-future); sem migration/schema novo.
+
+## Verificação
+
+- `npm test` → 38 suites / 213 testes verdes (171 baseline + 42 novos).
+- `npx tsc --noEmit` limpo; `npm run lint` limpo.
+- `npx expo export --platform web` → 19 rotas exportadas sem erro.
+- APK release arm64 gerado (34.7 MB < 50 MB). Device wireless offline no momento → verificação em
+  device DEFERRED (não bloqueia).
+
+## Riscos
+
+| Item | Severidade | Nota |
+|---|---|---|
+| Device verify (adb wireless) offline | Baixo | Retomar quando o device voltar; build/smoke web OK. |
+| `sortHabits('routine')` agrupa por `routineId` (sem lista de rotinas) | Baixo | Tela faz agrupamento visual com nomes/subtítulos; domínio testado. |
+| Notificações em device | Médio (herdado c1) | Inalterado neste ciclo. |
