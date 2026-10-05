@@ -3,6 +3,7 @@ import { Habit } from '@/domain/habit/model';
 import { isScheduled } from '@/domain/habit/isScheduled';
 import { HabitRecord } from '@/domain/record/model';
 import { currentStreak, bestStreak } from '@/domain/streak/currentStreak';
+import { computeOverallStreaks } from '@/domain/streak/overallStreak';
 import { OPEN } from '@/config/opens';
 
 export interface DaySummary {
@@ -12,6 +13,8 @@ export interface DaySummary {
   totalActive: number;
   overallCurrentStreak: number;
   overallBestStreak: number;
+  dayStreakCurrent: number;
+  dayStreakBest: number;
 }
 
 export interface DayPoint {
@@ -55,6 +58,8 @@ export function daySummary(habits: Habit[], records: HabitRecord[], now: Date): 
     if (b > best) best = b;
   }
 
+  const overall = computeOverallStreaks(active, records, now);
+
   return {
     scheduledToday,
     completedToday,
@@ -62,6 +67,8 @@ export function daySummary(habits: Habit[], records: HabitRecord[], now: Date): 
     totalActive: active.length,
     overallCurrentStreak: current,
     overallBestStreak: best,
+    dayStreakCurrent: overall.current,
+    dayStreakBest: overall.best,
   };
 }
 

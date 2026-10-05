@@ -71,4 +71,38 @@ describe('aggregate', () => {
     expect(t.skips).toBe(1);
     expect(t.activeHabits).toBe(1);
   });
+
+  it('C3: dayStreakCurrent counts conquered days; skip is neutral', () => {
+    const records = [
+      rec('a', '2026-05-04', 'completed'),
+      rec('a', '2026-05-05', 'skipped'),
+      rec('a', '2026-05-06', 'completed'),
+    ];
+    const summary = daySummary([habit('a')], records, now);
+    expect(summary.dayStreakCurrent).toBe(3);
+  });
+
+  it('C3: dayStreakCurrent resets on a missed scheduled day', () => {
+    const records = [
+      rec('a', '2026-05-04', 'completed'),
+      rec('a', '2026-05-05', 'missed'),
+      rec('a', '2026-05-06', 'completed'),
+    ];
+    expect(daySummary([habit('a')], records, now).dayStreakCurrent).toBe(1);
+  });
+
+  it('C3: legacy overallCurrentStreak stays the max individual streak', () => {
+    const records = [
+      rec('a', '2026-05-01', 'completed'),
+      rec('a', '2026-05-02', 'completed'),
+      rec('a', '2026-05-03', 'completed'),
+      rec('a', '2026-05-04', 'completed'),
+      rec('a', '2026-05-05', 'completed'),
+      rec('a', '2026-05-06', 'completed'),
+      rec('b', '2026-05-06', 'completed'),
+    ];
+    const summary = daySummary([habit('a'), habit('b')], records, now);
+    expect(summary.overallCurrentStreak).toBe(6);
+    expect(summary.dayStreakCurrent).toBe(1);
+  });
 });
