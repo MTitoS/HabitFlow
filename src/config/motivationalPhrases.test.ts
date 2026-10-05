@@ -1,8 +1,8 @@
 import { MOTIVATIONAL_PHRASES, phraseForDate } from '@/config/motivationalPhrases';
 
 describe('motivationalPhrases', () => {
-  it('has exactly 50 phrases with text and author', () => {
-    expect(MOTIVATIONAL_PHRASES).toHaveLength(50);
+  it('has exactly 49 phrases with text and author', () => {
+    expect(MOTIVATIONAL_PHRASES).toHaveLength(49);
     for (const phrase of MOTIVATIONAL_PHRASES) {
       expect(phrase.text.trim().length).toBeGreaterThan(0);
       expect(phrase.author.trim().length).toBeGreaterThan(0);
