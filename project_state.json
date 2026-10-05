@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 4,
-  "state_name": "review-apk-build",
+  "state": 5,
+  "state_name": "knowledge-capture",
   "phase": "A-mvp-baseline",
   "approved_gates": [
     {
@@ -13,6 +13,11 @@
       "state": 4,
       "approved_at": "2026-10-03T20:23:37.360Z",
       "note": "Tito aprovou ship + APK"
+    },
+    {
+      "state": 4,
+      "approved_at": "2026-10-05T14:18:30.835Z",
+      "note": "Tito aprovou ciclo final (retheming v0.1.8) - fechship RUG"
     }
   ],
   "rug_retries_used": 0,
@@ -31,5 +36,5 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-03T20:24:40.395Z"
+  "updated_at": "2026-10-05T14:18:30.836Z"
 }
