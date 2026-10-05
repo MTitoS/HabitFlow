@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 1,
-  "state_name": "discovery-c2",
+  "state": 2,
+  "state_name": "planning-c2-done",
   "phase": "B-streak-routine-stats",
   "approved_gates": [
     {
@@ -18,6 +18,11 @@
       "state": 4,
       "approved_at": "2026-10-05T14:18:30.835Z",
       "note": "Tito aprovou ciclo final (retheming v0.1.8) - fechship RUG"
+    },
+    {
+      "state": 1,
+      "approved_at": "2026-10-05T16:52:06.262Z",
+      "note": "Grilling completo 6/6 opens resolvidas por Tito (round 1+2)"
     }
   ],
   "rug_retries_used": 0,
@@ -36,7 +41,7 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-05T14:29:56.484Z",
+  "updated_at": "2026-10-05T16:52:06.263Z",
   "prior_phase": {
     "phase": "A-mvp-baseline",
     "state_reached": 5,
