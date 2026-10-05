@@ -5,9 +5,11 @@ import { AppScaffold } from '@/components/layout/AppScaffold';
 import { WeeklyChart } from '@/components/feature/dashboard/WeeklyChart';
 import { StreakCard } from '@/components/feature/dashboard/StreakCard';
 import { CompletionChart } from '@/components/feature/dashboard/CompletionChart';
+import { MonthView } from '@/components/feature/dashboard/MonthView';
 import { EmptyState } from '@/components/feature/EmptyState';
 import { ProgressRing } from '@/components/ui/ProgressRing';
 import { daySummary, monthlySeries, totals, weeklySeries } from '@/domain/stats/aggregate';
+import { monthDayStatus } from '@/domain/streak/overallStreak';
 
 export default function StatisticsScreen() {
   const theme = useTheme();
@@ -43,7 +45,7 @@ export default function StatisticsScreen() {
         </View>
       </SB>
 
-      <StreakCard current={summary.overallCurrentStreak} best={summary.overallBestStreak} />
+      <StreakCard current={summary.dayStreakCurrent} best={summary.dayStreakBest} />
 
       <SB card="stats">
         <Stat label="Completados" value={`${total.completions}`} />
@@ -53,6 +55,11 @@ export default function StatisticsScreen() {
 
       <WeeklyChart series={week} />
       <CompletionChart series={month} />
+      <MonthView
+        series={month}
+        statuses={monthDayStatus(habits, records, now)}
+        streakCurrent={summary.dayStreakCurrent}
+      />
     </AppScaffold>
   );
 }
