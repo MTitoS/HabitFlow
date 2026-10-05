@@ -7,7 +7,11 @@ export function HabitStreak({ days }: { days: number }) {
   const theme = useTheme();
   if (days <= 0) return null;
   return (
-    <View style={styles.row}>
+    <View
+      accessible
+      accessibilityLabel={`Sequência de ${days} ${days === 1 ? 'dia' : 'dias'}`}
+      style={styles.row}
+    >
       <Icon name="fire" size={14} color="accent" />
       <RNText style={[styles.label, { color: theme.color('textMuted') }]}>
         {days} {days === 1 ? 'dia' : 'dias'}
