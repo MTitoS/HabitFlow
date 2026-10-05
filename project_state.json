@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 4,
-  "state_name": "review-c2",
+  "state": 5,
+  "state_name": "knowledge-capture-c2",
   "phase": "B-streak-routine-stats",
   "approved_gates": [
     {
@@ -28,6 +28,11 @@
       "state": 2,
       "approved_at": "2026-10-05T16:52:37.070Z",
       "note": "Tito aprovou PLAN-c2 17 tasks via Telegram"
+    },
+    {
+      "state": 4,
+      "approved_at": "2026-10-05T17:33:32.974Z",
+      "note": "Tito aprovou ship c2 (v0.2.0) via Telegram"
     }
   ],
   "rug_retries_used": 0,
@@ -46,7 +51,7 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-05T17:07:37.445Z",
+  "updated_at": "2026-10-05T17:33:32.975Z",
   "prior_phase": {
     "phase": "A-mvp-baseline",
     "state_reached": 5,

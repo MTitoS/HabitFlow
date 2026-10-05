@@ -96,3 +96,12 @@
 - useLegacyPackaging=true (gradle.properties) -> APK 42.5MB -> 25.7-36MB, arm64-only. Telegram limita 50MB por arquivo.
 - Retheming (v0.1.8): paleta 7 cores terra/creme do designer aplicada a AMBOS os temas, com cross-review de AA (success verde oliva derivado for light; dark warm escada L*16-36). Designer entregou tokens via 2 sessoes com script WCAG (hf_pass4.py).
 - Domain: habit so entra na agenda de datas >= createdAt (T7 anti-retroativo). Skip undo recupera credito (T6). Ambos TDD red-green.
+
+## Ciclo 2 (c2) — refinamentos streak/rotina/stats (04-05/10/2026, v0.2.0-c2)
+- Streak geral = "dia vencido": todos os hábitos agendados completed OU skipped (skip neutro nos 2 níveis — individual e geral). Missed zera; dia sem agendados é neutro (pula). Implementado em domain/streak/overallStreak.ts (isConqueredDay).
+- daySummary é consumido por achievements/celebração: campos novos SEMPRE aditivos (legado intacto) — evita regressão em features que leem o mesmo objeto.
+- Frases motivacionais: seleção determinística por dia (hash da dateKey, nunca Math.random) — mesma frase no mesmo dia em qualquer abertura; teste garante count + shape {text, author}.
+- Filtros/ordenação persistidos em prefs (ordem + filtro de rotina); default pré-1ª-troca = inclusão + Ativos.
+- MonthView (heatmap vencido/parcial/neutro + headline streak geral + resumo) reusa monthlySeries do aggregate — visão nova sem duplicar domain.
+- ConsistencyCalendar removido com imports (visão redundante com a aba Calendário) — decisão de produto: não manter arquivo órfão "para o futuro".
+- Fluxo c2 rodou 100% via Telegram (grilling rounds, gates, entrega) — desktop só como console de orquestração.
