@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 4,
-  "state_name": "review-c3",
+  "state": 5,
+  "state_name": "knowledge-capture-c3",
   "phase": "C-retroactive-streak",
   "approved_gates": [
     {
@@ -43,6 +43,11 @@
       "state": 2,
       "approved_at": "2026-10-08T12:34:21.761Z",
       "note": "Tito aprovou PLAN-c3 via gate"
+    },
+    {
+      "state": 4,
+      "approved_at": "2026-10-08T12:54:55.728Z",
+      "note": "Tito aprovou ship c3 (v0.2.1) + validou retroativo e streak in-app"
     }
   ],
   "rug_retries_used": 0,
@@ -61,7 +66,7 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-08T12:48:58.423Z",
+  "updated_at": "2026-10-08T12:54:55.729Z",
   "prior_phase": {
     "phase": "B-streak-routine-stats",
     "state_reached": 5,

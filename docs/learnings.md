@@ -105,3 +105,10 @@
 - MonthView (heatmap vencido/parcial/neutro + headline streak geral + resumo) reusa monthlySeries do aggregate — visão nova sem duplicar domain.
 - ConsistencyCalendar removido com imports (visão redundante com a aba Calendário) — decisão de produto: não manter arquivo órfão "para o futuro".
 - Fluxo c2 rodou 100% via Telegram (grilling rounds, gates, entrega) — desktop só como console de orquestração.
+
+## Ciclo 3 (c3) — edição retroativa + streak hoje-pendente (08/10/2026, v0.2.1-c3)
+- Streak "hoje pendente não zera" era bug de DOMÍNIO (scanCurrent breakava com run=0 pois o scan inicia em hoje) — o fix correto foi alinhar com o padrão continue do overallStreak.ts, NÃO criar displayStreak paralelo (uma fonte só de verdade).
+- Edição retroativa = exceção com guard em 2 camadas (config ligada + janela dia-calendário {ontem,anteontem} + isScheduled + createdAt<=dateKey); setCompletedToday segue intacto; completedAt registra o momento REAL da edição (histórico append-only preservado — a edição é um fato novo).
+- Hábito quantitativo retro grava value=targetValue (meta do dia batida) — sem dialog de input, decisão de produto simples.
+- UI: descoberta no calendário do HabitDetail (célula tocável) > long-press no HabitRow (risco de toque acidental na tela de maior tráfego); Home permanece intocada = exceção fica longe do caminho principal.
+- Ciclo c3: 9 tasks, 243 testes, release v0.2.1-c3 validada IN-APP pelo usuário retroativo+streak OK.
