@@ -5,7 +5,8 @@ import { useData } from '@/data/DataProvider';
 import { AppScaffold } from '@/components/layout/AppScaffold';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/feature/EmptyState';
-import { monthlySeries } from '@/domain/stats/aggregate';
+import { CalendarDayCell } from '@/components/feature/CalendarDayCell';
+import { calendarDayInfo, CalendarDayInfo } from '@/domain/streak/overallStreak';
 import { monthKey, todayKey } from '@/domain/date/dateUtils';
 import { buildMonthGrid } from '@/domain/date/monthGrid';
 import { statusForView } from '@/domain/stats/materializeMissed';
@@ -23,11 +24,15 @@ export default function CalendarScreen() {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
   const now = new Date();
-  const series = monthlySeries(habits.filter((h) => !h.archivedAt), records, now);
   const today = todayKey(now);
 
-  const byDate = new Map(series.map((p) => [p.dateKey, p]));
   const grid = buildMonthGrid(Number(month.slice(0, 4)), Number(month.slice(5, 7)) - 1);
+  const dayInfos = new Map<string, CalendarDayInfo>();
+  for (const row of grid) {
+    for (const dateKey of row) {
+      if (dateKey) dayInfos.set(dateKey, calendarDayInfo(habits, records, dateKey));
+    }
+  }
 
   const dayStatus = (dateKey: string) => {
     const active = habits.filter((h) => !h.archivedAt);
@@ -69,7 +74,7 @@ export default function CalendarScreen() {
 
       <MonthGrid
         grid={grid}
-        byDate={byDate}
+        dayInfos={dayInfos}
         today={today}
         onSelect={(dateKey) => setSelectedDay(dateKey)}
       />
@@ -102,12 +107,12 @@ export default function CalendarScreen() {
 
 function MonthGrid({
   grid,
-  byDate,
+  dayInfos,
   today,
   onSelect,
 }: {
   grid: (string | null)[][];
-  byDate: Map<string, { dateKey: string; scheduled: number; completed: number; percent: number; monthDay: number; weekday: string }>;
+  dayInfos: Map<string, CalendarDayInfo>;
   today: string;
   onSelect: (dateKey: string) => void;
 }) {
@@ -124,54 +129,19 @@ function MonthGrid({
       </View>
       {grid.map((row, rowIndex) => (
         <View key={`row-${rowIndex}`} style={styles.monthRow}>
-          {row.map((dateKey, index) => {
-            if (!dateKey) return <View key={`${rowIndex}-${index}`} style={styles.cell} />;
-        const point = byDate.get(dateKey);
-        const symbol =
-          point && point.scheduled > 0
-            ? point.completed === point.scheduled
-              ? '✓'
-              : point.completed > 0
-                ? '◐'
-                : '○'
-            : '';
-        const bg =
-          point && point.scheduled > 0
-            ? point.completed === point.scheduled
-              ? theme.color('calendarDoneFill')
-              : point.completed > 0
-                ? theme.color('calendarSkipFill')
-                : 'transparent'
-            : 'transparent';
-        const fg =
-          point && point.scheduled > 0
-            ? point.completed === point.scheduled
-              ? theme.color('calendarDoneFg')
-              : point.completed > 0
-                ? theme.color('calendarSkipFg')
-                : theme.color('textSecondary')
-            : theme.color('textMuted');
-        const isToday = dateKey === today;
-        return (
-          <Pressable
-            key={dateKey}
-            accessibilityRole="button"
-            accessibilityLabel={`${dateKey}${point && point.scheduled > 0 ? `: ${point.completed}/${point.scheduled}` : ''}`}
-            onPress={() => onSelect(dateKey)}
-            style={[
-              styles.cell,
-              isToday && { borderWidth: 2, borderColor: theme.color('calendarTodayRing'), borderRadius: 8 },
-              point && point.scheduled > 0 && point.completed === 0 && { borderWidth: 1, borderColor: theme.color('calendarPendingBorder'), borderRadius: 8 },
-            ]}
-          >
-            <View style={[styles.day, { backgroundColor: bg }]}>
-              <RNText style={{ color: fg, fontSize: 12, fontWeight: '600' }}>
-                {symbol || Number(dateKey.slice(8))}
-              </RNText>
-            </View>
-          </Pressable>
-        );
-          })}
+          {row.map((dateKey, index) =>
+            dateKey ? (
+              <CalendarDayCell
+                key={dateKey}
+                dateKey={dateKey}
+                info={dayInfos.get(dateKey)}
+                isToday={dateKey === today}
+                onPress={onSelect}
+              />
+            ) : (
+              <View key={`${rowIndex}-${index}`} style={styles.cell} />
+            ),
+          )}
         </View>
       ))}
     </View>
@@ -204,12 +174,6 @@ const styles = StyleSheet.create({
     width: `${100 / 7}%`,
     aspectRatio: 1,
     padding: 2,
-  },
-  day: {
-    flex: 1,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   dayCard: {
     gap: 8,

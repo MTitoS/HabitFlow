@@ -36,6 +36,47 @@ export function isConqueredDay(habits: Habit[], records: HabitRecord[], dateKey:
   });
 }
 
+export type CalendarDayMark = 'conquered' | 'partial' | 'skip' | 'pending';
+
+export interface CalendarDayInfo {
+  dateKey: string;
+  mark: CalendarDayMark;
+  scheduled: number;
+  done: number;
+  skipped: number;
+}
+
+export function calendarDayInfo(
+  habits: Habit[],
+  records: HabitRecord[],
+  dateKey: string,
+): CalendarDayInfo {
+  const active = activeHabits(habits);
+  const scheduled = scheduledOn(active, dateKey);
+  if (scheduled.length === 0) {
+    return { dateKey, mark: 'pending', scheduled: 0, done: 0, skipped: 0 };
+  }
+
+  const byHabit = indexRecords(records);
+  let done = 0;
+  let skipped = 0;
+  for (const habit of scheduled) {
+    const status = byHabit.get(habit.id)?.get(dateKey)?.status;
+    if (status === 'completed') done += 1;
+    else if (status === 'skipped') skipped += 1;
+  }
+
+  const mark: CalendarDayMark = isConqueredDay(active, records, dateKey)
+    ? 'conquered'
+    : done > 0
+      ? 'partial'
+      : skipped > 0
+        ? 'skip'
+        : 'pending';
+
+  return { dateKey, mark, scheduled: scheduled.length, done, skipped };
+}
+
 function lowerBoundOf(active: Habit[], records: HabitRecord[], today: string): string {
   let lowerBound = today;
   for (const habit of active) {

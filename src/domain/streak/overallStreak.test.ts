@@ -1,4 +1,4 @@
-import { computeOverallStreaks, isConqueredDay, monthDayStatus } from '@/domain/streak/overallStreak';
+import { calendarDayInfo, computeOverallStreaks, isConqueredDay, monthDayStatus } from '@/domain/streak/overallStreak';
 import { Habit } from '@/domain/habit/model';
 import { HabitRecord } from '@/domain/record/model';
 
@@ -141,6 +141,59 @@ describe('isConqueredDay', () => {
       createdAt: new Date(2026, 4, 1).getTime(),
     });
     expect(isConqueredDay([none], [], '2026-05-08')).toBe(false);
+  });
+});
+
+describe('calendarDayInfo', () => {
+  const habits = [habit({ id: 'h1' }), habit({ id: 'h2' })];
+
+  it('is conquered when every scheduled habit is completed or skipped', () => {
+    const records = [rec('h1', '2026-05-08', 'completed'), rec('h2', '2026-05-08', 'skipped')];
+    const info = calendarDayInfo(habits, records, '2026-05-08');
+    expect(info).toEqual({ dateKey: '2026-05-08', mark: 'conquered', scheduled: 2, done: 1, skipped: 1 });
+  });
+
+  it('is partial when some but not all scheduled habits are completed', () => {
+    const records = [rec('h1', '2026-05-08', 'completed')];
+    const info = calendarDayInfo(habits, records, '2026-05-08');
+    expect(info.mark).toBe('partial');
+    expect(info.done).toBe(1);
+    expect(info.skipped).toBe(0);
+  });
+
+  it('flags skip when a non-conquered day has skips and no completions', () => {
+    const records = [rec('h1', '2026-05-08', 'skipped')];
+    const info = calendarDayInfo(habits, records, '2026-05-08');
+    expect(info.mark).toBe('skip');
+    expect(info.skipped).toBe(1);
+    expect(info.done).toBe(0);
+  });
+
+  it('is pending when a scheduled day has no record (today open, not a failure)', () => {
+    const info = calendarDayInfo(habits, [], '2026-05-08');
+    expect(info).toEqual({ dateKey: '2026-05-08', mark: 'pending', scheduled: 2, done: 0, skipped: 0 });
+  });
+
+  it('is pending with scheduled 0 when nothing is scheduled', () => {
+    const weekend = habit({
+      frequency: { kind: 'weekdays', schedule: { days: ['mon', 'tue', 'wed', 'thu', 'fri'] } },
+    });
+    const info = calendarDayInfo([weekend], [], '2026-05-09');
+    expect(info).toEqual({ dateKey: '2026-05-09', mark: 'pending', scheduled: 0, done: 0, skipped: 0 });
+  });
+
+  it('ignores archived habits', () => {
+    const mixed = [habit({ id: 'h1' }), habit({ id: 'h2', archivedAt: 1 })];
+    const records = [rec('h1', '2026-05-08', 'completed'), rec('h2', '2026-05-08', 'skipped')];
+    const info = calendarDayInfo(mixed, records, '2026-05-08');
+    expect(info).toEqual({ dateKey: '2026-05-08', mark: 'conquered', scheduled: 1, done: 1, skipped: 0 });
+  });
+
+  it('agrees with isConqueredDay on the conquered mark', () => {
+    const records = [rec('h1', '2026-05-08', 'completed'), rec('h2', '2026-05-08', 'skipped')];
+    expect(calendarDayInfo(habits, records, '2026-05-08').mark).toBe(
+      isConqueredDay(habits, records, '2026-05-08') ? 'conquered' : 'not-conquered',
+    );
   });
 });
 
