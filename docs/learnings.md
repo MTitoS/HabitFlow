@@ -112,3 +112,7 @@
 - Hábito quantitativo retro grava value=targetValue (meta do dia batida) — sem dialog de input, decisão de produto simples.
 - UI: descoberta no calendário do HabitDetail (célula tocável) > long-press no HabitRow (risco de toque acidental na tela de maior tráfego); Home permanece intocada = exceção fica longe do caminho principal.
 - Ciclo c3: 9 tasks, 243 testes, release v0.2.1-c3 validada IN-APP pelo usuário retroativo+streak OK.
+
+## Governança MCP (09/10/2026)
+- Audit do fluxo: index inicial via codebase-memory MCP EXISTIA (1.678 nós/4.601 edges, cobertura completa do src/) e discovery foia graph-first com citações arquivo:linha exatas. Lacuna: re-index entre fases de implementação era implícito, sem prova.
+- Norma nova (aprovada por Tito): toda missão RUG leva bloco CODEBASE_MEMORY_MCP no brief; implement re-indexa ao fim de cada fase e reporta nodes/edges; review re-verifica index_status antes do verdict. Prova vira artefato.
