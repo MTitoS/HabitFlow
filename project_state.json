@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 1,
-  "state_name": "discovery-c3",
+  "state": 2,
+  "state_name": "planning-c3",
   "phase": "C-retroactive-streak",
   "approved_gates": [
     {
@@ -33,6 +33,11 @@
       "state": 4,
       "approved_at": "2026-10-05T17:33:32.974Z",
       "note": "Tito aprovou ship c2 (v0.2.0) via Telegram"
+    },
+    {
+      "state": 1,
+      "approved_at": "2026-10-08T12:29:21.958Z",
+      "note": "c3: grilling completo (dia-calendario, value=meta do dia, spec aprovado)"
     }
   ],
   "rug_retries_used": 0,
@@ -51,7 +56,7 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-08T12:24:46.587Z",
+  "updated_at": "2026-10-08T12:29:21.958Z",
   "prior_phase": {
     "phase": "B-streak-routine-stats",
     "state_reached": 5,
