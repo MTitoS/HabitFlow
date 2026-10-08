@@ -33,7 +33,6 @@ function scanCurrent(
   lowerBound: string,
 ): number {
   let run = 0;
-  let broke = false;
   let day = today;
 
   while (compareDateKeys(day, lowerBound) >= 0) {
@@ -49,18 +48,17 @@ function scanCurrent(
     } else if (record?.status === 'skipped') {
       // skip: neutral, does not break streak
     } else if (day === today) {
-      // pending today: streak not extended, not broken
-      break;
+      // today still open: do not extend, do not reset
+      day = addDays(day, -1);
+      continue;
     } else {
       // scheduled day without completion (missed): reset and stop
-      broke = true;
       break;
     }
 
     day = addDays(day, -1);
   }
 
-  if (broke) return run;
   return run;
 }
 

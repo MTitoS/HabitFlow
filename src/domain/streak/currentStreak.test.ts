@@ -95,3 +95,61 @@ describe('currentStreak', () => {
     expect(bestStreak(h, [], day)).toBe(0);
   });
 });
+
+describe('currentStreak — T2 today-pending neutrality', () => {
+  it('T2: today pending preserves the run of 5 completed days', () => {
+    const records = [
+      rec('2026-05-03', 'completed'),
+      rec('2026-05-04', 'completed'),
+      rec('2026-05-05', 'completed'),
+      rec('2026-05-06', 'completed'),
+      rec('2026-05-07', 'completed'),
+    ];
+    expect(currentStreak(habit(), records, day)).toBe(5);
+  });
+
+  it('T2: today completed extends the run to 6', () => {
+    const records = [
+      rec('2026-05-03', 'completed'),
+      rec('2026-05-04', 'completed'),
+      rec('2026-05-05', 'completed'),
+      rec('2026-05-06', 'completed'),
+      rec('2026-05-07', 'completed'),
+      rec('2026-05-08', 'completed'),
+    ];
+    expect(currentStreak(habit(), records, day)).toBe(6);
+  });
+
+  it('T2: today pending with yesterday missed resets to 0', () => {
+    const records = [
+      rec('2026-05-03', 'completed'),
+      rec('2026-05-04', 'completed'),
+      rec('2026-05-05', 'completed'),
+      rec('2026-05-06', 'completed'),
+    ];
+    expect(currentStreak(habit(), records, day)).toBe(0);
+  });
+
+  it('T2: today pending with yesterday skipped keeps the completed run', () => {
+    const records = [
+      rec('2026-05-03', 'completed'),
+      rec('2026-05-04', 'completed'),
+      rec('2026-05-05', 'completed'),
+      rec('2026-05-06', 'completed'),
+      rec('2026-05-07', 'skipped'),
+    ];
+    expect(currentStreak(habit(), records, day)).toBe(4);
+  });
+
+  it('T2: streak is bounded by the habit createdAt (ignores earlier days)', () => {
+    const h = habit({ createdAt: new Date(2026, 4, 6, 12, 0, 0).getTime() });
+    const records = [
+      rec('2026-05-03', 'completed'),
+      rec('2026-05-04', 'completed'),
+      rec('2026-05-05', 'completed'),
+      rec('2026-05-06', 'completed'),
+      rec('2026-05-07', 'completed'),
+    ];
+    expect(currentStreak(h, records, day)).toBe(2);
+  });
+});
