@@ -1,8 +1,8 @@
 {
   "project": "habitflow",
-  "state": 5,
-  "state_name": "knowledge-capture-c3",
-  "phase": "C-retroactive-streak",
+  "state": 1,
+  "state_name": "discovery-c4",
+  "phase": "D-status-composition-charts",
   "approved_gates": [
     {
       "state": 2,
@@ -60,17 +60,17 @@
     "regras avançadas reminders (múltiplos horários x frequência)"
   ],
   "artifacts": {
-    "spec": "docs/SPEC-c3.md",
+    "spec": "docs/SPEC-c4.md",
     "plan": "docs/PLAN-c3.md",
     "review": "docs/REVIEW.md",
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-08T12:54:55.729Z",
+  "updated_at": "2026-10-08T18:30:00-03:00",
   "prior_phase": {
-    "phase": "B-streak-routine-stats",
+    "phase": "C-retroactive-streak",
     "state_reached": 5,
-    "completed_at": "2026-10-08T12:24:46.579Z",
-    "summary": "c2 concluido: streak geral/individual, frases, filtros habits, MonthView, prefs â€” v0.2.0-c2 ship aprovado"
+    "completed_at": "2026-10-08T18:30:00-03:00",
+    "summary": "c3 concluido: retroativo opt-in 48h + streak hoje-pendente — v0.2.1-c3 validado in-app por Tito"
   }
 }
