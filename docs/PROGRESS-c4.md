@@ -86,3 +86,39 @@
   por isso o delta é medido contra o baseline de governança.
 - `parse_partial`: `android/gradlew`, `android/settings.gradle` (não-`src`, sem impacto no ciclo).
   `skipped`: 0. `not_indexed`: 65 por design (gitignore/sufixos).
+
+---
+
+## Fix pós-review — `v0.2.3-c4fix` (State 4 reopen)
+
+Fato reportado em device (print): Ter/Qua com rótulo **100%** mas barra preenchida em ~metade;
+Sex/Sáb/Dom com **0%** exibindo terracota (não concluído) mesmo sendo **dias futuros**.
+
+**Root cause (confirmado no código):**
+- A altura da barra era normalizada por `maxScheduled` (máximo de hábitos agendados do período):
+  um dia 100% concluído, com menos hábitos agendados que o pico da semana, renderizava barra mais
+  curta que o rótulo (`WeeklyChart.tsx`/`CompletionChart.tsx`, `count / maxScheduled`).
+- O rótulo usava o `percent` legado (`completedOn`), fonte **diferente** da composição
+  (`composeDay`), permitindo divergência rótulo ↔ segmentos.
+- `weeklySeries`/`monthlySeries` preenchiam `done/skipped/undone` para **dias futuros**, pintando
+  "não concluído" (terracota) em dias que ainda não encerraram.
+
+**Fix (mínimo, sem refactor):**
+- `src/domain/stats/aggregate.ts`: `dateKey > today` ⇒ `NO_COMPOSITION` (zera `done/skipped/undone`)
+  nas duas séries, preservando `scheduled`/`completed`/`percent` legados (calendar/MonthView).
+- `WeeklyChart.tsx` / `CompletionChart.tsx`: altura de cada segmento = `count / point.scheduled`
+  (dia), de modo que 100% = barra cheia; rótulo `%` derivado da composição (`done/scheduled`);
+  `maxScheduled` removido. Skip permanece neutro (não entra no `%`).
+- Legado `completed`/`percent`/`completedOn` **intocados**; `opens.ts` §15.1 intocado.
+
+**TDD (RED → GREEN):** 7 testes novos — 4 de domínio (`aggregate.test.ts`: dia completo sem undone;
+futuro sem composição no semanal e no mensal; hoje não é futuro) + 3 de chart (`dashboard.test.tsx`:
+altura por composição via `toHaveStyle`, dia vazio neutro, futuro sem terracota e passado sem record
+com undone). Suite **266 testes / 41 suites** verdes; `tsc --noEmit` e `expo lint` limpos.
+
+**Release `v0.2.3-c4fix`** ("C4 fix - composição consistente"): asset `HabitFlow-arm64.apk`
+(34,647,314 bytes / 34.8 MB), download **anônimo HTTP 200**; releases antigas preservadas.
+
+**Codebase Memory (delta do fix):** re-index `full` 1× — **1.779 nós / 4.780 edges** →
+**1.780 nós / 4.781 edges** (**+1 / +1**; variação de re-scan/auto-refresh). Frescor comprovado:
+`composeDay`, `weeklySeries` e `monthlySeries` presentes no grafo.
