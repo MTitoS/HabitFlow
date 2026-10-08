@@ -1,8 +1,8 @@
 {
   "project": "habitflow",
-  "state": 4,
-  "state_name": "review-c4",
-  "phase": "D-status-composition-charts",
+  "state": 1,
+  "state_name": "wireing-e1",
+  "phase": "E-day-status-unification",
   "approved_gates": [
     {
       "state": 2,
@@ -75,17 +75,17 @@
     "regras avançadas reminders (múltiplos horários x frequência)"
   ],
   "artifacts": {
-    "spec": "docs/SPEC-c4.md",
+    "spec": "docs/SPEC-e1.md",
     "plan": "docs/PLAN-c3.md",
     "review": "docs/REVIEW.md",
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-08T20:25:02.319Z",
+  "updated_at": "2026-10-08T18:10:00-03:00",
   "prior_phase": {
-    "phase": "C-retroactive-streak",
+    "phase": "D-status-composition-charts",
     "state_reached": 5,
-    "completed_at": "2026-10-08T18:30:00-03:00",
-    "summary": "c3 concluido: retroativo opt-in 48h + streak hoje-pendente — v0.2.1-c3 validado in-app por Tito"
+    "completed_at": "2026-10-08T18:10:00-03:00",
+    "summary": "c4 concluido (com fix c4fix): charts segmentados por status com tokens unificados e futuros neutros — v0.2.3 validado in-app por Tito"
   }
 }
