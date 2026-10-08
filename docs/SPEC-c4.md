@@ -345,12 +345,12 @@ Decisões fechadas (grilling / produto):
 | c4.4 | Legenda | `components/feature/dashboard/ChartLegend.tsx` | Rodapé de cada card, 3 itens swatch+label |
 | c4.5 | T4 herança MonthView | spec (esta seção) | Tokens próprios, ancorados na família do MonthView |
 
-OPENs reais (ambos default agora, sem bloquear):
+Sem OPENs pendentes neste ciclo. As 2 questões abertas do discovery foram **fechadas no grilling**:
 
-| # | Questão | Default |
+| # | Questão | Decisão (fechada) |
 |---|---|---|
-| c4-O1 | Distinguir `pending` (hoje) de `missed` (passado) na composição | Bucket único "não concluído" |
-| c4-O2 | Padrão/hatch diagonal no bucket "não concluído" (a11y extra) | Não usar (exigiria `react-native-svg`); avaliar em ciclo futuro |
+| c4-O1 | Distinguir `pending` (hoje) de `missed` (passado) na composição | **Bucket único "não concluído"** (`pending` + `missed` + sem-record). Pending de hoje conta como não concluído e pode virar concluído — o chart reflete o estado do dia no instante da leitura. |
+| c4-O2 | Padrão/hatch diagonal no bucket "não concluído" (a11y extra) | **Sem hatch; `react-native-svg` fica fora do ciclo.** Distinção não-só-cor garantida por: separador de 1px entre segmentos (cor do card) + legenda textual com swatch + `accessibilityLabel` com contagens. |
 
 ---
 
