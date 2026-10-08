@@ -92,5 +92,12 @@ npx expo export --platform web -> Exported: dist (rotas /statistics e /calendar 
 - Tag `v0.2.2-c4` + GitHub release "C4 - composição de status nos charts"; asset
   `HabitFlow-arm64.apk`; download **anônimo HTTP 200** verificado via `node fetch`; releases antigas
   preservadas.
-- `git push origin main`.
-- Device verify (`adb` wireless `192.168.15.26:34263`): ver `PROGRESS-c4.md` §Device (SKIP se offline).
+- `git push origin main` (`b70fc71..413049c`).
+- Device verify (`adb` wireless `192.168.15.26:34263`): **deferred/SKIP** — device offline
+  (`10061`; `adb devices` vazio). Não bloqueante (web export + build arm64 + HTTP 200 do release).
+
+## 6. Codebase Memory (norma v2)
+
+- Re-index `full` 1×: **1.678 nós / 4.601 edges** (baseline de governança) →
+  **1.771 nós / 4.753 edges** (**+93 / +152**). `composeDay` e `ChartLegend` confirmados por
+  `search_graph`. `skipped=0`; `parse_partial` só em `android/*.gradle*` (fora de `src/`).

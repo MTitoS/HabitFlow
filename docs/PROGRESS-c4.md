@@ -67,5 +67,22 @@
 - Tag `v0.2.2-c4` + GitHub release "C4 - composição de status nos charts"; asset
   `HabitFlow-arm64.apk`; download **anônimo HTTP 200** verificado via `node fetch`; releases
   antigas preservadas.
-- `git push origin main`.
-- Device verify (`adb` wireless `192.168.15.26:34263`): ver §Device.
+- `git push origin main` (`b70fc71..413049c`).
+
+## Device
+
+- Device verify (`adb` wireless `192.168.15.26:34263`): **deferred/SKIP** — device recusou conexão
+  (`cannot connect ... 10061`, `adb devices` vazio = offline). Não bloqueante; mitigado por web
+  export dist + build release arm64 + download anônimo HTTP 200 do release.
+
+## Codebase Memory (norma v2 — re-index por fase com prova)
+
+- Re-index `full` **1×** ao fim do ciclo (projeto `C-Coding-Projetos-Pessoal-HabitFlow`).
+- **Nodes/edges:** baseline do ciclo (nota de governança 09/10) **1.678 nós / 4.601 edges** →
+  **1.771 nós / 4.753 edges** (**+93 nós, +152 edges**).
+- Frescor comprovado: `composeDay` e `ChartLegend` presentes no grafo
+  (`search_graph` = 4 matches). Nota: o snapshot lido imediatamente antes do re-index já mostrava
+  1.771/4.753 (auto-refresh de projeto observado aplicou as mudanças antes da chamada explícita),
+  por isso o delta é medido contra o baseline de governança.
+- `parse_partial`: `android/gradlew`, `android/settings.gradle` (não-`src`, sem impacto no ciclo).
+  `skipped`: 0. `not_indexed`: 65 por design (gitignore/sufixos).
