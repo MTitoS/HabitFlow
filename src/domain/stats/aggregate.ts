@@ -63,6 +63,8 @@ export function composeDay(
   return { scheduled, done, skipped, undone: scheduled - done - skipped };
 }
 
+const NO_COMPOSITION: DayComposition = { scheduled: 0, done: 0, skipped: 0, undone: 0 };
+
 function activeHabits(habits: Habit[]): Habit[] {
   return habits.filter((h) => !h.archivedAt);
 }
@@ -106,14 +108,15 @@ export function daySummary(habits: Habit[], records: HabitRecord[], now: Date): 
 export function weeklySeries(habits: Habit[], records: HabitRecord[], now: Date, weekStarts = OPEN.FREQ_WEEK_STARTS): DayPoint[] {
   const active = activeHabits(habits);
   const byHabit = indexRecords(records);
-  const start = weekStartOf(todayKey(now), weekStarts);
+  const today = todayKey(now);
+  const start = weekStartOf(today, weekStarts);
   const points: DayPoint[] = [];
 
   for (let i = 0; i < 7; i += 1) {
     const dateKey = addDays(start, i);
     const scheduled = active.filter((h) => isScheduled(h, dateKey)).length;
     const completed = completedOn(records, dateKey);
-    const composition = composeDay(active, byHabit, dateKey);
+    const composition = dateKey > today ? NO_COMPOSITION : composeDay(active, byHabit, dateKey);
     points.push({
       dateKey,
       scheduled,
@@ -133,7 +136,8 @@ export function weeklySeries(habits: Habit[], records: HabitRecord[], now: Date,
 export function monthlySeries(habits: Habit[], records: HabitRecord[], now: Date): DayPoint[] {
   const active = activeHabits(habits);
   const byHabit = indexRecords(records);
-  const start = monthStartOf(todayKey(now));
+  const today = todayKey(now);
+  const start = monthStartOf(today);
   const month = monthKey(start);
   const first = new Date(Number(start.slice(0, 4)), Number(start.slice(5, 7)) - 1);
   const length = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
@@ -144,7 +148,7 @@ export function monthlySeries(habits: Habit[], records: HabitRecord[], now: Date
     if (monthKey(dateKey) !== month) continue;
     const scheduled = active.filter((h) => isScheduled(h, dateKey)).length;
     const completed = completedOn(records, dateKey);
-    const composition = composeDay(active, byHabit, dateKey);
+    const composition = dateKey > today ? NO_COMPOSITION : composeDay(active, byHabit, dateKey);
     points.push({
       dateKey,
       scheduled,

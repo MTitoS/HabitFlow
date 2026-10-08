@@ -23,7 +23,6 @@ function segmentsOf(point: DayPoint): { token: ColorToken; count: number }[] {
 
 export function WeeklyChart({ series, title = 'Esta semana' }: Props) {
   const theme = useTheme();
-  const maxScheduled = Math.max(...series.map((p) => p.scheduled), 0);
 
   return (
     <View style={[styles.card, { backgroundColor: theme.color('surface'), borderColor: theme.color('border') }]}>
@@ -31,8 +30,8 @@ export function WeeklyChart({ series, title = 'Esta semana' }: Props) {
       <View style={styles.chart}>
         {series.map((point) => {
           const label = WEEKDAY_LABELS[weekdayOf(point.dateKey)];
-          const pct = Math.round(point.percent * 100);
-          const hasData = point.scheduled > 0 && maxScheduled > 0;
+          const pct = point.scheduled > 0 ? Math.round((point.done / point.scheduled) * 100) : 0;
+          const hasData = point.scheduled > 0;
           const ordered = segmentsOf(point).reverse();
           return (
             <View
@@ -46,11 +45,12 @@ export function WeeklyChart({ series, title = 'Esta semana' }: Props) {
                   ordered.map((segment, index) => (
                     <View
                       key={segment.token}
+                      testID={`wk-seg-${point.dateKey}-${segment.token}`}
                       style={[
                         styles.segment,
                         index > 0 && { borderTopWidth: 1, borderTopColor: theme.color('surface') },
                         {
-                          height: `${(segment.count / maxScheduled) * 100}%`,
+                          height: `${(segment.count / point.scheduled) * 100}%`,
                           backgroundColor: theme.color(segment.token),
                         },
                       ]}

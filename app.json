@@ -2,7 +2,7 @@
   "expo": {
     "name": "HabitFlow",
     "slug": "HabitFlow",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "habitflow",
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "versionCode": 12,
+      "versionCode": 13,
       "package": "com.anonymous.HabitFlow"
     },
     "web": {

@@ -212,4 +212,39 @@ describe('aggregate', () => {
     expect(may5?.undone).toBe(0);
     expect(may5?.percent).toBe(0);
   });
+
+  it('FIX-c4: fully completed day composes to done only (bar full, no undone)', () => {
+    const habits = [habit('a'), habit('b')];
+    const records = [rec('a', '2026-05-05', 'completed'), rec('b', '2026-05-05', 'completed')];
+    const c = composeDay(habits, indexRecords(records), '2026-05-05');
+    expect(c).toEqual({ scheduled: 2, done: 2, skipped: 0, undone: 0 });
+  });
+
+  it('FIX-c4: weeklySeries leaves future days with no composition (neutral, not failure)', () => {
+    const series = weeklySeries([habit('a')], [], now); // now = 2026-05-06
+    const future = series.find((p) => p.dateKey === '2026-05-07');
+    expect(future?.scheduled).toBe(1); // legacy count preserved for calendar/MonthView
+    expect(future?.done).toBe(0);
+    expect(future?.skipped).toBe(0);
+    expect(future?.undone).toBe(0);
+    const past = series.find((p) => p.dateKey === '2026-05-04');
+    expect(past?.scheduled).toBe(1);
+    expect(past?.undone).toBe(1); // past missing record still counts as undone
+  });
+
+  it('FIX-c4: today itself is not treated as future (pending counts as undone)', () => {
+    const series = weeklySeries([habit('a')], [], now);
+    const today = series.find((p) => p.dateKey === '2026-05-06');
+    expect(today?.undone).toBe(1);
+  });
+
+  it('FIX-c4: monthlySeries leaves future days with no composition', () => {
+    const series = monthlySeries([habit('a')], [], now);
+    const future = series.find((p) => p.dateKey === '2026-05-20');
+    expect(future?.done).toBe(0);
+    expect(future?.skipped).toBe(0);
+    expect(future?.undone).toBe(0);
+    const past = series.find((p) => p.dateKey === '2026-05-04');
+    expect(past?.undone).toBe(1);
+  });
 });
