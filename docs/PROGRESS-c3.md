@@ -60,6 +60,11 @@
 ## Release
 
 - Bump: `versionCode 11` / `versionName "2.1.0"` (`app.json` + `android/app/build.gradle`).
-- APK release arm64: < 50 MB, build Gradle `BUILD SUCCESSFUL`.
+- APK release arm64: **34.8 MB** (< 50 MB), build Gradle `BUILD SUCCESSFUL` (2m22s, `--no-daemon`).
 - Tag `v0.2.1-c3` + GitHub release "C3 - retro-complete + streak hoje"
-  (asset `HabitFlow-arm64.apk`, download anônimo HTTP 200; releases antigas preservadas).
+  (`https://github.com/MTitoS/HabitFlow/releases/tag/v0.2.1-c3`); asset `HabitFlow-arm64.apk`
+  (36,444,310 bytes), download **anônimo HTTP 200** verificado via `node fetch` (redirect-follow);
+  releases antigas preservadas.
+- `git push origin main` (`d393bb6..a32520d`) — push final único de código.
+- Device verify (`adb` wireless `192.168.15.26:34263`): **deferred** — device recusou conexão
+  (offline); mitigado por web export + build release arm64 + verificação anônima do release.

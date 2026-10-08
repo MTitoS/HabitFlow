@@ -77,7 +77,7 @@ Distribuição dos 30 testes novos: +5 (R1 streak T2), +10 (R2 guard T1), +7 (R3
 |---|---|---|
 | `overallCurrentStreak` (max individual) sobe em dias hoje-pendente | Baixo | Comportamento mais correto; `StreakCard` usa o geral (não afetado) |
 | Worker Jest não encerra com elegância | Baixo | Herdado de c1/c2; nenhum fail |
-| Device verify (`adb` wireless) | Baixo | Tentado; se offline, `deferred` sem bloquear (web export + build release OK) |
+| Device verify (`adb` wireless `192.168.15.26:34263`) | Baixo | Tentado; device recusou conexão (offline) ⇒ `deferred` sem bloquear (web export + build release + download HTTP 200 OK) |
 
 ## 7. Bloqueadores
 
