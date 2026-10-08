@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 1,
-  "state_name": "discovery-c4",
+  "state": 2,
+  "state_name": "planning-c4",
   "phase": "D-status-composition-charts",
   "approved_gates": [
     {
@@ -48,6 +48,16 @@
       "state": 4,
       "approved_at": "2026-10-08T12:54:55.728Z",
       "note": "Tito aprovou ship c3 (v0.2.1) + validou retroativo e streak in-app"
+    },
+    {
+      "state": 1,
+      "approved_at": "2026-10-08T20:11:15.436Z",
+      "note": "c4 grilling: bucket Ãºnico, sem hatch, segmentos verticais â€” spec aprovado"
+    },
+    {
+      "state": 1,
+      "approved_at": "2026-10-08T19:05:00-03:00",
+      "note": "c4 grilling: bucket único, sem hatch, segmentos verticais — spec aprovado"
     }
   ],
   "rug_retries_used": 0,
@@ -66,7 +76,7 @@
     "learnings": "docs/learnings.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-08T18:30:00-03:00",
+  "updated_at": "2026-10-08T19:05:00-03:00",
   "prior_phase": {
     "phase": "C-retroactive-streak",
     "state_reached": 5,
