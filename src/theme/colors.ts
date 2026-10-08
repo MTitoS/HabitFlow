@@ -51,6 +51,9 @@ export interface ThemeColors {
   calendarMissedFg: string;
   calendarPendingBorder: string;
   calendarTodayRing: string;
+  chartDone: string;
+  chartSkip: string;
+  chartUndone: string;
   onPrimary: string;
   onSecondary: string;
   onSuccess: string;
@@ -120,6 +123,9 @@ export const lightColors: ThemeColors = {
   calendarMissedFg: '#94291E',
   calendarPendingBorder: '#AB7D4166',
   calendarTodayRing: '#C3593F',
+  chartDone: '#4A6B3E',
+  chartSkip: '#A5763C',
+  chartUndone: '#AD2F21',
   onPrimary: '#F8F1E5',
   onSecondary: '#F8F1E5',
   onSuccess: '#F8F1E5',
@@ -188,6 +194,9 @@ export const darkColors: ThemeColors = {
   calendarMissedFg: '#EFE8D8',
   calendarPendingBorder: '#C39F94',
   calendarTodayRing: '#EFCA93',
+  chartDone: '#EFCA93',
+  chartSkip: '#DCBAAE',
+  chartUndone: '#C0795F',
   onPrimary: '#FFFFFF',
   onSecondary: '#491814',
   onSuccess: '#491814',
@@ -259,6 +268,9 @@ export const ALL_COLOR_TOKENS: ColorToken[] = [
   'calendarMissedFg',
   'calendarPendingBorder',
   'calendarTodayRing',
+  'chartDone',
+  'chartSkip',
+  'chartUndone',
   'onPrimary',
   'onSecondary',
   'onSuccess',

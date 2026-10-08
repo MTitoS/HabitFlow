@@ -61,6 +61,13 @@ describe('theme tokens', () => {
     expect(contrastRatio(darkColors.textSecondary, darkColors.surface)).toBeGreaterThanOrEqual(3);
   });
 
+  it('chart status tokens keep >= 3:1 contrast over surface (both themes)', () => {
+    for (const token of ['chartDone', 'chartSkip', 'chartUndone'] as ColorToken[]) {
+      expect(contrastRatio(lightColors[token], lightColors.surface)).toBeGreaterThanOrEqual(3);
+      expect(contrastRatio(darkColors[token], darkColors.surface)).toBeGreaterThanOrEqual(3);
+    }
+  });
+
   it('spacing scale covers 4..64', () => {
     expect(spacing.xs).toBe(4);
     expect(spacing.enormous).toBe(64);

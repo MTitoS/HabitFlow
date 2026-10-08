@@ -11,6 +11,9 @@ function monthSeries(): DayPoint[] {
       scheduled: 1,
       completed: i < 2 ? 1 : 0,
       percent: i < 2 ? 1 : 0,
+      done: i < 2 ? 1 : 0,
+      skipped: 0,
+      undone: i < 2 ? 0 : 1,
       monthDay: i + 1,
       weekday: `2026-05-${day}`,
     };

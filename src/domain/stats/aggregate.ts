@@ -1,7 +1,7 @@
 import { addDays, monthStartOf, monthKey, todayKey, weekStartOf } from '@/domain/date/dateUtils';
 import { Habit } from '@/domain/habit/model';
 import { isScheduled } from '@/domain/habit/isScheduled';
-import { HabitRecord } from '@/domain/record/model';
+import { HabitRecord, indexRecords } from '@/domain/record/model';
 import { currentStreak, bestStreak } from '@/domain/streak/currentStreak';
 import { computeOverallStreaks } from '@/domain/streak/overallStreak';
 import { OPEN } from '@/config/opens';
@@ -22,6 +22,9 @@ export interface DayPoint {
   scheduled: number;
   completed: number;
   percent: number;
+  done: number;
+  skipped: number;
+  undone: number;
   monthDay: number;
   weekday: string;
 }
@@ -30,6 +33,34 @@ export interface Totals {
   completions: number;
   skips: number;
   activeHabits: number;
+}
+
+export interface DayComposition {
+  scheduled: number;
+  done: number;
+  skipped: number;
+  undone: number;
+}
+
+export function composeDay(
+  activeHabits: Habit[],
+  recordsByHabit: Map<string, Map<string, HabitRecord>>,
+  dateKey: string,
+): DayComposition {
+  let scheduled = 0;
+  let done = 0;
+  let skipped = 0;
+
+  for (const habit of activeHabits) {
+    if (habit.archivedAt) continue;
+    if (!isScheduled(habit, dateKey)) continue;
+    scheduled += 1;
+    const status = recordsByHabit.get(habit.id)?.get(dateKey)?.status;
+    if (status === 'completed') done += 1;
+    else if (status === 'skipped') skipped += 1;
+  }
+
+  return { scheduled, done, skipped, undone: scheduled - done - skipped };
 }
 
 function activeHabits(habits: Habit[]): Habit[] {
@@ -74,6 +105,7 @@ export function daySummary(habits: Habit[], records: HabitRecord[], now: Date): 
 
 export function weeklySeries(habits: Habit[], records: HabitRecord[], now: Date, weekStarts = OPEN.FREQ_WEEK_STARTS): DayPoint[] {
   const active = activeHabits(habits);
+  const byHabit = indexRecords(records);
   const start = weekStartOf(todayKey(now), weekStarts);
   const points: DayPoint[] = [];
 
@@ -81,11 +113,15 @@ export function weeklySeries(habits: Habit[], records: HabitRecord[], now: Date,
     const dateKey = addDays(start, i);
     const scheduled = active.filter((h) => isScheduled(h, dateKey)).length;
     const completed = completedOn(records, dateKey);
+    const composition = composeDay(active, byHabit, dateKey);
     points.push({
       dateKey,
       scheduled,
       completed,
       percent: scheduled > 0 ? completed / scheduled : 0,
+      done: composition.done,
+      skipped: composition.skipped,
+      undone: composition.undone,
       monthDay: Number(dateKey.slice(8)),
       weekday: dateKey,
     });
@@ -96,6 +132,7 @@ export function weeklySeries(habits: Habit[], records: HabitRecord[], now: Date,
 
 export function monthlySeries(habits: Habit[], records: HabitRecord[], now: Date): DayPoint[] {
   const active = activeHabits(habits);
+  const byHabit = indexRecords(records);
   const start = monthStartOf(todayKey(now));
   const month = monthKey(start);
   const first = new Date(Number(start.slice(0, 4)), Number(start.slice(5, 7)) - 1);
@@ -107,11 +144,15 @@ export function monthlySeries(habits: Habit[], records: HabitRecord[], now: Date
     if (monthKey(dateKey) !== month) continue;
     const scheduled = active.filter((h) => isScheduled(h, dateKey)).length;
     const completed = completedOn(records, dateKey);
+    const composition = composeDay(active, byHabit, dateKey);
     points.push({
       dateKey,
       scheduled,
       completed,
       percent: scheduled > 0 ? completed / scheduled : 0,
+      done: composition.done,
+      skipped: composition.skipped,
+      undone: composition.undone,
       monthDay: i + 1,
       weekday: dateKey,
     });

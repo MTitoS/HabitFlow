@@ -2,16 +2,28 @@ import { StyleSheet, Text as RNText, View } from 'react-native';
 import { useTheme } from '@/theme/Provider';
 import { spacing } from '@/theme/spacing';
 import { radius } from '@/theme/radius';
+import { ColorToken } from '@/theme/types';
 import { DayPoint } from '@/domain/stats/aggregate';
 import { weekdayOf, WEEKDAY_LABELS } from '@/domain/date/dateUtils';
+import { ChartLegend } from '@/components/feature/dashboard/ChartLegend';
 
 interface Props {
   series: DayPoint[];
   title?: string;
 }
 
+function segmentsOf(point: DayPoint): { token: ColorToken; count: number }[] {
+  const segments: { token: ColorToken; count: number }[] = [
+    { token: 'chartDone', count: point.done },
+    { token: 'chartSkip', count: point.skipped },
+    { token: 'chartUndone', count: point.undone },
+  ];
+  return segments.filter((segment) => segment.count > 0);
+}
+
 export function WeeklyChart({ series, title = 'Esta semana' }: Props) {
   const theme = useTheme();
+  const maxScheduled = Math.max(...series.map((p) => p.scheduled), 0);
 
   return (
     <View style={[styles.card, { backgroundColor: theme.color('surface'), borderColor: theme.color('border') }]}>
@@ -20,26 +32,37 @@ export function WeeklyChart({ series, title = 'Esta semana' }: Props) {
         {series.map((point) => {
           const label = WEEKDAY_LABELS[weekdayOf(point.dateKey)];
           const pct = Math.round(point.percent * 100);
-          const hasData = point.scheduled > 0;
+          const hasData = point.scheduled > 0 && maxScheduled > 0;
+          const ordered = segmentsOf(point).reverse();
           return (
-            <View key={point.dateKey} style={styles.barCol} accessibilityLabel={`${label}: ${pct}%`}>
+            <View
+              key={point.dateKey}
+              style={styles.barCol}
+              accessibilityLabel={`${label}: ${point.done} concluídos, ${point.skipped} skipados, ${point.undone} não concluídos (${pct}%)`}
+            >
               <RNText style={{ color: theme.color('textMuted'), fontSize: 11 }}>{pct}%</RNText>
               <View style={[styles.track, { backgroundColor: theme.color('surfaceElevated') }]}>
-                <View
-                  style={[
-                    styles.bar,
-                    {
-                      height: hasData ? `${Math.max(4, pct)}%` : '4%',
-                      backgroundColor: theme.color('primary'),
-                    },
-                  ]}
-                />
+                {hasData &&
+                  ordered.map((segment, index) => (
+                    <View
+                      key={segment.token}
+                      style={[
+                        styles.segment,
+                        index > 0 && { borderTopWidth: 1, borderTopColor: theme.color('surface') },
+                        {
+                          height: `${(segment.count / maxScheduled) * 100}%`,
+                          backgroundColor: theme.color(segment.token),
+                        },
+                      ]}
+                    />
+                  ))}
               </View>
               <RNText style={{ color: theme.color('textMuted'), fontSize: 11 }}>{label}</RNText>
             </View>
           );
         })}
       </View>
+      <ChartLegend />
     </View>
   );
 }
@@ -74,8 +97,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     overflow: 'hidden',
   },
-  bar: {
+  segment: {
     width: '100%',
-    borderRadius: radius.sm,
   },
 });
