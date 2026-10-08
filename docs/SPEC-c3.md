@@ -311,12 +311,14 @@ Decisões fechadas (grilling) e custódia:
 | c3.3 | Semântica do fato retroativo | `transitions.complete` | `date` = dia passado, `completedAt` = instante da edição; sem undo |
 | c3.4 | Exibição do streak hoje-pendente | `src/domain/streak/currentStreak.ts` | Alinhar ao `overallStreak`: neutro → continua; sem campo `displayStreak` |
 
-**OPENs restantes (ambos menores, com default recomendado):**
+**Decisões fechadas adicionais (grilling 08/10/2026 — encerram as OPENs c3.5/c3.6):**
 
-| # | Questão | Local | Default recomendado |
+| # | Questão | Local de custódia | Decisão |
 |---|---|---|---|
-| c3.5 | A "janela 48h" é literal (wall-clock) ou dia-calendário (ontem/anteontem)? | `transitions.ts` | **Dia-calendário** (`{today-1, today-2}`) — os records são por dia, então 48h wall-clock não é representável de forma estável. Nomear a constante `48h`/2 dias conforme texto do produto. |
-| c3.6 | Retro-conclusão de hábito **quantitativo**: qual `value`? | `habits/[id]/index.tsx` + guard | Gravar `value = habit.targetValue` (marca a meta do dia). Se o produto preferir, restringir retro a binários — troca isolada no guard/UI. |
+| c3.5 | Janela "48h": literal (wall-clock) ou dia-calendário? Nome/custódia da constante | `src/config/opens.ts` | **Dia-calendário** `{today-1, today-2}` (ontem + anteontem), ambos editáveis até o fim do dia atual. Records são por dia; 48h wall-clock não é representável de forma estável. Constante única `RETROACTIVE_WINDOW_DAYS = 2` em config, com comentário ligando ao texto de produto "48h", consumida pelo guard — supersede o nome ilustrativo `RETRO_EDIT_WINDOW_DAYS` citado em §4/§6. |
+| c3.6 | Retro-conclusão de hábito **quantitativo**: qual `value`? | `src/domain/record/transitions.ts` (helper) + `habits/[id]/index.tsx` | Gravar `value = habit.targetValue` (meta do dia marcada como batida). Sem diálogo de input, sem restrição a binários. |
+
+**OPENs restantes:** nenhum — todas as decisões do ciclo 3 estão fechadas e com custódia (c3.1–c3.6).
 
 ---
 
