@@ -1,7 +1,12 @@
 import { DataStore } from '@/data/adapters/types';
 import { Habit, Routine } from '@/domain/habit/model';
 import { HabitRecord } from '@/domain/record/model';
-import { complete as completeRecord, pending as pendingRecord, skipped as skippedRecord } from '@/domain/record/transitions';
+import {
+  canCompleteRetroactive,
+  complete as completeRecord,
+  pending as pendingRecord,
+  skipped as skippedRecord,
+} from '@/domain/record/transitions';
 import { toDateKey } from '@/domain/date/dateUtils';
 import { createSkipCredit, SkipCredit } from '@/domain/skip-credit/grantWeeklyCredit';
 import { OPEN } from '@/config/opens';
@@ -119,6 +124,24 @@ function createRecordRepository(store: DataStore): RecordRepository {
     async setCompleted(habitId, dateKey, now, value) {
       if (toDateKey(now) !== dateKey) {
         throw new Error('record_write_past_date');
+      }
+      const existing = await find(habitId, dateKey);
+      if (existing && existing.status !== 'pending') {
+        throw new Error('record_conflict');
+      }
+      const next = completeRecord(habitId, dateKey, now, value);
+      const all = await store.readTable<HabitRecord>(T_RECORDS);
+      const without = all.filter((r) => !(r.habitId === habitId && r.date === dateKey));
+      await store.writeTable(T_RECORDS, [...without, next]);
+    },
+    async setCompletedRetroactive(habitId, dateKey, now, value) {
+      const habits = await store.readTable<Habit>(T_HABITS);
+      const habit = habits.find((h) => h.id === habitId);
+      if (!habit) {
+        throw new Error('habit_not_found');
+      }
+      if (!canCompleteRetroactive(habit, undefined, dateKey, now, true)) {
+        throw new Error('record_write_out_of_window');
       }
       const existing = await find(habitId, dateKey);
       if (existing && existing.status !== 'pending') {

@@ -19,6 +19,9 @@ export const OPEN = {
   FREQ_WEEK_STARTS: 1,
 };
 
+// janela de produto "48h" = dia-calendário {today-1, today-2}
+export const RETROACTIVE_WINDOW_DAYS = 2;
+
 export const FREQUENCY_LABELS: Record<string, string> = {
   daily: 'Todos os dias',
   weekdays: 'Dias da semana',

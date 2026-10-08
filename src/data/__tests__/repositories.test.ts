@@ -176,3 +176,85 @@ describe('repositories write contract', () => {
     );
   });
 });
+
+describe('records retroactive write (T1/R3)', () => {
+  const now = new Date(2026, 4, 5, 10, 0, 0); // 2026-05-05
+  const yesterday = '2026-05-04';
+  const dayBefore = '2026-05-03';
+  const outOfWindow = '2026-05-02';
+
+  async function retroSetup() {
+    const store = createTestStore();
+    const repos = createRepositories(store);
+    const created = await repos.habits.create({
+      name: 'Ler',
+      icon: 'book',
+      color: 'primary',
+      type: 'binary',
+      frequency: { kind: 'daily', schedule: {} },
+    });
+    const habit = { ...created, createdAt: new Date(2026, 3, 1).getTime() };
+    await repos.habits.update(habit);
+    return { store, repos, habit };
+  }
+
+  it('writes a past-dated fact with completedAt = now', async () => {
+    const { repos, habit } = await retroSetup();
+    await repos.records.setCompletedRetroactive(habit.id, yesterday, now);
+    const all = await repos.records.forHabit(habit.id);
+    expect(all).toHaveLength(1);
+    expect(all[0].date).toBe(yesterday);
+    expect(all[0].status).toBe('completed');
+    expect(all[0].completedAt).toBe(now.getTime());
+  });
+
+  it('rejects overwriting a completed fact', async () => {
+    const { repos, habit } = await retroSetup();
+    await repos.records.setCompletedRetroactive(habit.id, yesterday, now);
+    await expect(repos.records.setCompletedRetroactive(habit.id, yesterday, now)).rejects.toThrow(
+      'record_conflict',
+    );
+  });
+
+  it('rejects a skipped record (no retro-skip)', async () => {
+    const { store, repos, habit } = await retroSetup();
+    await store.writeTable('records', [
+      { id: `${habit.id}__${dayBefore}`, habitId: habit.id, date: dayBefore, status: 'skipped' },
+    ]);
+    await expect(repos.records.setCompletedRetroactive(habit.id, dayBefore, now)).rejects.toThrow(
+      'record_conflict',
+    );
+  });
+
+  it('rejects a date outside the retroactive window', async () => {
+    const { repos, habit } = await retroSetup();
+    await expect(
+      repos.records.setCompletedRetroactive(habit.id, outOfWindow, now),
+    ).rejects.toThrow('record_write_out_of_window');
+  });
+
+  it('replaces a residual pending record on the same day', async () => {
+    const { store, repos, habit } = await retroSetup();
+    await store.writeTable('records', [
+      { id: `${habit.id}__${yesterday}`, habitId: habit.id, date: yesterday, status: 'pending' },
+    ]);
+    await repos.records.setCompletedRetroactive(habit.id, yesterday, now);
+    const all = await repos.records.forHabit(habit.id);
+    expect(all).toHaveLength(1);
+    expect(all[0].status).toBe('completed');
+  });
+
+  it('forwards the quantitative value', async () => {
+    const { repos, habit } = await retroSetup();
+    await repos.records.setCompletedRetroactive(habit.id, yesterday, now, 8);
+    const all = await repos.records.forHabit(habit.id);
+    expect(all[0].value).toBe(8);
+  });
+
+  it('setCompleted (today-only) still refuses past dates', async () => {
+    const { repos, habit } = await retroSetup();
+    await expect(repos.records.setCompleted(habit.id, yesterday, now)).rejects.toThrow(
+      'record_write_past_date',
+    );
+  });
+});
