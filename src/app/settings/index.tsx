@@ -10,6 +10,7 @@ const ITEMS = [
   { href: '/settings/appearance', label: 'Aparência', icon: 'moon' },
   { href: '/settings/notifications', label: 'Notificações', icon: 'bell' },
   { href: '/settings/defaults', label: 'Padrões', icon: 'settings' },
+  { href: '/settings/advanced', label: 'Avançado', icon: 'settings' },
   { href: '/settings/data', label: 'Dados', icon: 'database' },
   { href: '/settings/about', label: 'Sobre', icon: 'info' },
 ];

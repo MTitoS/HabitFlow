@@ -9,6 +9,7 @@ const KEYS = {
   defaults: 'habitflow:prefs:defaults',
   seen: 'habitflow:prefs:seen',
   habitsView: 'habitflow:prefs:habitsView',
+  retroEdit: 'habitflow:prefs:retroEdit',
 };
 
 async function getItem(key: string): Promise<string | null> {
@@ -104,4 +105,13 @@ export async function getHabitsViewPrefs(): Promise<HabitsViewPrefs | null> {
 
 export async function setHabitsViewPrefs(prefs: HabitsViewPrefs): Promise<void> {
   await setItem(KEYS.habitsView, JSON.stringify(prefs));
+}
+
+export async function getRetroEditEnabled(): Promise<boolean> {
+  const value = await getItem(KEYS.retroEdit);
+  return value === '1';
+}
+
+export async function setRetroEditEnabled(enabled: boolean): Promise<void> {
+  await setItem(KEYS.retroEdit, enabled ? '1' : '0');
 }

@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getHabitsViewPrefs, setHabitsViewPrefs } from '@/services/prefs';
+import {
+  getHabitsViewPrefs,
+  getRetroEditEnabled,
+  setHabitsViewPrefs,
+  setRetroEditEnabled,
+} from '@/services/prefs';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -23,5 +28,27 @@ describe('habits view prefs', () => {
   it('returns null on invalid JSON', async () => {
     await AsyncStorage.setItem('habitflow:prefs:habitsView', '{invalid');
     expect(await getHabitsViewPrefs()).toBeNull();
+  });
+});
+
+describe('retroEdit pref', () => {
+  beforeEach(async () => {
+    await AsyncStorage.clear();
+  });
+
+  it('defaults to false when never saved', async () => {
+    expect(await getRetroEditEnabled()).toBe(false);
+  });
+
+  it('roundtrips true and false', async () => {
+    await setRetroEditEnabled(true);
+    expect(await getRetroEditEnabled()).toBe(true);
+    await setRetroEditEnabled(false);
+    expect(await getRetroEditEnabled()).toBe(false);
+  });
+
+  it('returns false on an invalid stored value', async () => {
+    await AsyncStorage.setItem('habitflow:prefs:retroEdit', 'maybe');
+    expect(await getRetroEditEnabled()).toBe(false);
   });
 });
