@@ -36,7 +36,7 @@
   `--no-daemon`, `ANDROID_HOME=C:\AndroidSdkJ` junction, `JAVA_HOME=C:\android-jdk21`).
 - Tag `v0.2.4-e1` + GitHub release **"E1 - dia vencido + skip no calendário"**; asset
   `HabitFlow-arm64.apk`; download **anônimo HTTP 200** verificado; releases antigas preservadas.
-- `git push origin main` (`<de>`).
+- `git push origin main` (`0cff029..ef00b57`).
 
 ## Device
 
@@ -46,5 +46,8 @@
 ## Codebase Memory (norma v2 — re-index por fase com prova)
 
 - Re-index `full` **1×** ao fim do ciclo (projeto `C-Coding-Projetos-Pessoal-HabitFlow`).
-- **Nodes/edges:** baseline (fim do c4fix) **1.780 nós / 4.781 edges** → ver §delta reportado na
-  revisão (`REVIEW-e1.md`). Frescor comprovado: `calendarDayInfo` e `CalendarDayCell` no grafo.
+- **Nodes/edges:** baseline (fim do c4fix) **1.780 nós / 4.781 edges** → **1.836 nós / 4.889 edges**
+  (**+56 nós / +108 edges**; variação de re-scan incluída). Frescor comprovado: `calendarDayInfo`
+  (`overallStreak.ts:49-78`), `CalendarDayInfo` e `CalendarDayCell` (`CalendarDayCell.tsx:12-75`)
+  presentes no grafo (`search_graph` = 5 matches). `parse_partial`: só `android/gradlew` e
+  `android/settings.gradle` (fora de `src/`, sem impacto); `skipped`: 0; `not_indexed`: 65 por design.

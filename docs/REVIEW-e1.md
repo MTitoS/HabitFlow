@@ -21,9 +21,9 @@ e lint exit **0**, web export ok, download anônimo do release **HTTP 200**.
 | E2 | `b2f4146` | `CalendarDayCell.tsx` | `CalendarDayCell.test.tsx` (+8) | ok |
 | E3 | `b2f4146` | `calendar/index.tsx` (`MonthGrid` → `CalendarDayCell`) | suite | ok |
 | E4 | `b2f4146` | `REVIEW-e1.md` | suite + tsc + lint + web | ok |
-| E5 | `e1-release` | `app.json` + `build.gradle` + `PROGRESS-e1.md` | HTTP 200 + push | ok |
+| E5 | `ef00b57` | `app.json` + `build.gradle` + `PROGRESS-e1.md` | HTTP 200 + push | ok |
 
-Cadeia de commits: `0cff029` (SPEC/PLAN) → `b2f4146` (E1–E4) → `e1-release` (bump + PROGRESS) →
+Cadeia de commits: `0cff029` (SPEC/PLAN) → `b2f4146` (E1–E4) → `ef00b57` (bump + PROGRESS) →
 `v0.2.4-e1` (tag). Gaps: nenhum artefato faltante.
 
 ## 2. Regras críticas — verificação
@@ -42,8 +42,8 @@ Cadeia de commits: `0cff029` (SPEC/PLAN) → `b2f4146` (E1–E4) → `e1-release
 
 ## 3. Delta check — Codebase Memory
 
-Re-index `full` 1×: before **1.780 / 4.781** → after **<after> / <after_edges>** (**+n / +m**).
-Frescor: `calendarDayInfo` e `CalendarDayCell` presentes no grafo (`search_graph`).
+Re-index `full` 1×: before **1.780 / 4.781** → after **1.836 / 4.889** (**+56 / +108**).
+Frescor: `calendarDayInfo`, `CalendarDayInfo` e `CalendarDayCell` presentes no grafo (`search_graph`).
 
 ## 4. Verificação prática (re-executada)
 
