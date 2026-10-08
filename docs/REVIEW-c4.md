@@ -85,6 +85,12 @@ npx expo export --platform web -> Exported: dist (rotas /statistics e /calendar 
 
 ## 5. Release (C8)
 
-> Preenchido na execução de C8 (`chore(release)`).
-
-- (a definir)
+- Bump: `versionCode 12` / `versionName "2.2.0"` (`app.json` + `android/app/build.gradle`); regras do
+  `build.gradle` intocadas.
+- APK release arm64: **34.8 MB** (36,447,598 bytes, < 50 MB), Gradle `BUILD SUCCESSFUL` (2m18s,
+  `--no-daemon`, `ANDROID_HOME=C:/AndroidSdkJ`, `JAVA_HOME=C:/android-jdk21`).
+- Tag `v0.2.2-c4` + GitHub release "C4 - composição de status nos charts"; asset
+  `HabitFlow-arm64.apk`; download **anônimo HTTP 200** verificado via `node fetch`; releases antigas
+  preservadas.
+- `git push origin main`.
+- Device verify (`adb` wireless `192.168.15.26:34263`): ver `PROGRESS-c4.md` §Device (SKIP se offline).
