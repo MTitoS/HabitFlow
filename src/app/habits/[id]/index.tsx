@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text as RNText, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '@/theme/Provider';
@@ -7,12 +8,16 @@ import { HabitIcon } from '@/components/feature/HabitIcon';
 import { HabitStreak } from '@/components/feature/HabitStreak';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { statusForView } from '@/domain/stats/materializeMissed';
+import { statusForView, ViewStatus } from '@/domain/stats/materializeMissed';
 import { computeStreaks } from '@/domain/streak/currentStreak';
 import { completionRate } from '@/domain/stats/completionRate';
 import { scheduledKeysInRange } from '@/domain/habit/isScheduled';
 import { addDays, daysInMonth, monthStartOf, todayKey } from '@/domain/date/dateUtils';
 import { quantitativeStats } from '@/domain/stats/quantitative';
+import { canCompleteRetroactive, retroactiveCompletionValue } from '@/domain/record/transitions';
+import { getRetroEditEnabled } from '@/services/prefs';
+import { useToast } from '@/components/ui/Toast';
+import { WeekStatusRow } from '@/components/feature/WeekStatusRow';
 import { Sparkline } from '@/components/feature/habit-stats/Sparkline';
 import { EmptyState } from '@/components/feature/EmptyState';
 import { Icon } from '@/components/ui/Icon';
@@ -21,7 +26,14 @@ import { ColorToken } from '@/theme/types';
 export default function HabitDetailScreen() {
   const theme = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { habits, records } = useData();
+  const { habits, records, repos, reload } = useData();
+  const { showToast } = useToast();
+  const [retroEnabled, setRetroEnabled] = useState(false);
+  const [confirmingKey, setConfirmingKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    getRetroEditEnabled().then(setRetroEnabled);
+  }, []);
 
   const habit = habits.find((h) => h.id === id);
 
@@ -48,6 +60,40 @@ export default function HabitDetailScreen() {
     key,
     status: statusForView(habit, habitRecords, key, now),
   }));
+
+  const recordByDate = new Map(habitRecords.map((r) => [r.date, r]));
+  const viewStatusByKey = new Map(weekStatus.map((w) => [w.key, w.status]));
+  const isRetroEligible = (key: string) =>
+    canCompleteRetroactive(habit, recordByDate.get(key), key, now, retroEnabled);
+  const statusLabelFor = (status: ViewStatus): string =>
+    status === 'completed'
+      ? 'concluído'
+      : status === 'skipped'
+        ? 'pulado'
+        : status === 'missed'
+          ? 'perdido'
+          : 'pendente';
+  const accessibilityLabelFor = (key: string) =>
+    isRetroEligible(key)
+      ? `Marcar ${habit.name} como concluído em ${key.slice(8)}`
+      : `${habit.name} em ${key.slice(8)}: ${statusLabelFor(viewStatusByKey.get(key) ?? null)}`;
+
+  const confirmRetro = async (key: string) => {
+    try {
+      await repos.records.setCompletedRetroactive(
+        habit.id,
+        key,
+        now,
+        retroactiveCompletionValue(habit),
+      );
+      setConfirmingKey(null);
+      await reload();
+      showToast('success', 'Concluído (retroativo)');
+    } catch {
+      setConfirmingKey(null);
+      showToast('error', 'Não foi possível concluir');
+    }
+  };
 
   return (
     <AppScaffold
@@ -77,22 +123,21 @@ export default function HabitDetailScreen() {
 
       <View style={styles.card}>
         <RNText style={[styles.sectionTitle, { color: theme.color('textMuted') }]}>Últimos 7 dias</RNText>
-        <View style={styles.weekRow}>
-          {weekStatus.map(({ key, status }) => {
-            const symbol =
-              status === 'completed' ? '✓' : status === 'skipped' ? '—' : status === 'missed' ? '✕' : '○';
-            const tokenColor =
-              status === 'completed' ? theme.color('successBright') : status === 'skipped' ? theme.color('accent') : status === 'missed' ? theme.color('dangerBright') : theme.color('textMuted');
-            return (
-              <View key={key} style={styles.weekCell}>
-                <RNText style={{ color: tokenColor, fontSize: 16 }}>{symbol}</RNText>
-                <RNText style={{ color: theme.color('textMuted'), fontSize: 10 }}>
-                  {key.slice(8)}
-                </RNText>
-              </View>
-            );
-          })}
-        </View>
+        <WeekStatusRow
+          days={weekStatus}
+          isRetroEligible={isRetroEligible}
+          onRetroComplete={setConfirmingKey}
+          accessibilityLabelFor={accessibilityLabelFor}
+        />
+        {confirmingKey ? (
+          <View style={styles.retroConfirm}>
+            <RNText style={{ color: theme.color('textSecondary'), flex: 1, fontSize: 13 }}>
+              Marcar {confirmingKey.slice(8)} como concluído (retroativo)?
+            </RNText>
+            <Button label="Cancelar" variant="ghost" onPress={() => setConfirmingKey(null)} />
+            <Button label="Confirmar" onPress={() => void confirmRetro(confirmingKey)} />
+          </View>
+        ) : null}
       </View>
 
       {quant ? (
@@ -162,12 +207,9 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-  weekRow: {
+  retroConfirm: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  weekCell: {
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
   },
 });
