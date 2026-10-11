@@ -4,8 +4,10 @@ import {
   formatDateKeyPtBR,
   monthStartOf,
   parseDateKey,
+  parseDateKeyUtc,
   startOfWeek,
   toDateKey,
+  toDateKeyUtc,
   weekdayOf,
   weekStartOf,
 } from '@/domain/date/dateUtils';
@@ -22,6 +24,16 @@ describe('dateUtils', () => {
 
   it('pads month and day', () => {
     expect(toDateKey(new Date(2026, 0, 3))).toBe('2026-01-03');
+  });
+
+  it('toDateKeyUtc reads the UTC calendar day regardless of local zone', () => {
+    expect(toDateKeyUtc(new Date(Date.UTC(2026, 4, 13)))).toBe('2026-05-13');
+    expect(toDateKeyUtc(new Date(Date.UTC(2026, 0, 1)))).toBe('2026-01-01');
+  });
+
+  it('roundtrips date keys through UTC midnight', () => {
+    expect(parseDateKeyUtc('2026-05-13').toISOString()).toBe('2026-05-13T00:00:00.000Z');
+    expect(toDateKeyUtc(parseDateKeyUtc('2026-05-13'))).toBe('2026-05-13');
   });
 
   it('addDays crosses month boundaries', () => {

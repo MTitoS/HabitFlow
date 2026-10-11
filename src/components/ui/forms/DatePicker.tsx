@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text as RNText, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text as RNText, View } from 'react-native';
 import {
   DateTimePicker as NativePicker,
   DateTimePickerChangeEvent,
@@ -7,7 +7,15 @@ import {
 import { useTheme } from '@/theme/Provider';
 import { radius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
-import { formatDateKeyPtBR, parseDateKey, toDateKey } from '@/domain/date/dateUtils';
+import { formatDateKeyPtBR, parseDateKey, parseDateKeyUtc, toDateKey, toDateKeyUtc } from '@/domain/date/dateUtils';
+
+function dateKeyFromPicker(date: Date): string {
+  return Platform.OS === 'android' ? toDateKeyUtc(date) : toDateKey(date);
+}
+
+function pickerValue(dateKey: string): Date {
+  return Platform.OS === 'android' ? parseDateKeyUtc(dateKey) : parseDateKey(dateKey);
+}
 
 interface Props {
   label: string;
@@ -24,7 +32,7 @@ export function DatePicker({ label, value, onChange }: Props) {
   const handleChange = (event: DateTimePickerChangeEvent, date: Date) => {
     setOpen(false);
     void event;
-    onChange(toDateKey(date));
+    onChange(dateKeyFromPicker(date));
   };
 
   const handleDismiss = () => {
@@ -55,7 +63,7 @@ export function DatePicker({ label, value, onChange }: Props) {
       </Pressable>
       {open ? (
         <NativePicker
-          value={value ? parseDateKey(value) : new Date()}
+          value={value ? pickerValue(value) : new Date()}
           mode="date"
           presentation="dialog"
           positiveButton={{ label: 'OK' }}
