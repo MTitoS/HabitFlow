@@ -1,6 +1,6 @@
-export const DB_VERSION = 1;
+export const DB_VERSION = 2;
 
-export const TABLES = ['habits', 'records', 'routines', 'skipcredit'] as const;
+export const TABLES = ['habits', 'records', 'routines', 'skipcredit', 'todos'] as const;
 
 export type TableName = (typeof TABLES)[number];
 
@@ -46,5 +46,9 @@ export const TABLE_DEFINITIONS: TableDefinition[] = [
   {
     name: 'skipcredit',
     fields: ['id', 'balance', 'lastGrantRef', 'updatedAt'],
+  },
+  {
+    name: 'todos',
+    fields: ['id', 'title', 'date', 'completed', 'completedAt', 'createdAt', 'updatedAt'],
   },
 ];

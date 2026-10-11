@@ -1,6 +1,8 @@
 import { buildExport, importPayload, validatePayload } from '@/data/exportImport';
 import { createTestStore } from '@/data/database';
 import { createRepositories } from '@/data/repositories/impl';
+import { DB_VERSION, TABLES } from '@/data/schema';
+import { applyMigrations } from '@/data/migrations';
 
 describe('export import', () => {
   it('roundtrips export → import → equal tables', async () => {
@@ -25,14 +27,41 @@ describe('export import', () => {
     expect(tablesB.habits).toHaveLength(1);
   });
 
-  it('payload carries version + exportedAt (sync-ready)', () => {
+  it('payload carries current version + exportedAt (sync-ready)', () => {
     const payload = validatePayload(JSON.stringify({ version: 1, exportedAt: '2026-01-01', tables: {} }));
-    expect(payload?.version).toBe(1);
+    expect(payload?.version).toBe(DB_VERSION);
   });
 
   it('rejects invalid payloads', () => {
     expect(validatePayload('nope')).toBeNull();
     expect(validatePayload(JSON.stringify({ tables: {} }))).toBeNull();
     expect(validatePayload(JSON.stringify({ version: 99, tables: {} }))).toBeNull();
+  });
+
+  it('declares the todos table and bumps DB_VERSION to 2 (Q6)', () => {
+    expect(TABLES).toContain('todos');
+    expect(DB_VERSION).toBe(2);
+  });
+
+  it('adds an empty todos table when migrating a v1 snapshot (Q6)', () => {
+    const migrated = applyMigrations({ habits: [], records: [] }, 1);
+    expect(migrated.todos).toEqual([]);
+  });
+
+  it('accepts a legacy v1 backup without todos (Q21)', () => {
+    const legacy = JSON.stringify({
+      version: 1,
+      exportedAt: '2026-01-01',
+      tables: { habits: [], records: [], routines: [], skipcredit: [] },
+    });
+    const payload = validatePayload(legacy);
+    expect(payload).not.toBeNull();
+    expect(payload?.version).toBe(2);
+    expect(payload?.tables.todos).toEqual([]);
+  });
+
+  it('does not re-run the v1→v2 migration on a current snapshot', () => {
+    const migrated = applyMigrations({ todos: [{ id: 't1' }] }, 2);
+    expect(migrated.todos).toEqual([{ id: 't1' }]);
   });
 });

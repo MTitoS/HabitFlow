@@ -8,12 +8,14 @@ import { DataStore } from '@/data/adapters/types';
 import { Habit, Routine } from '@/domain/habit/model';
 import { HabitRecord } from '@/domain/record/model';
 import { SkipCredit, grantWeeklyCredit } from '@/domain/skip-credit/grantWeeklyCredit';
+import { Todo } from '@/domain/todo/model';
 
 export interface DataContextValue {
   habits: Habit[];
   records: HabitRecord[];
   routines: Routine[];
   skipCredit: SkipCredit | null;
+  todos: Todo[];
   loading: boolean;
   error: Error | null;
   repos: Repositories;
@@ -36,14 +38,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [records, setRecords] = useState<HabitRecord[]>([]);
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [skipCredit, setSkipCredit] = useState<SkipCredit | null>(null);
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   const reload = useCallback(async () => {
     try {
-      const [h, r, ro, sc] = await Promise.all([
+      const [h, r, ro, sc, to] = await Promise.all([
         repos.habits.all(),
         repos.records.all(),
         repos.routines.all(),
         repos.skipCredit.get(),
+        repos.todos.all(),
       ]);
       const granted = grantWeeklyCredit(sc, new Date());
       if (granted !== sc) {
@@ -53,6 +57,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setRecords(r);
       setRoutines(ro);
       setSkipCredit(granted);
+      setTodos(to);
       setError(null);
       setLoading(false);
     } catch (e) {
@@ -70,8 +75,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, [reload, store]);
 
   const value = useMemo<DataContextValue>(
-    () => ({ habits, records, routines, skipCredit, loading, error, repos, store, reload }),
-    [habits, records, routines, skipCredit, loading, error, repos, store, reload],
+    () => ({ habits, records, routines, skipCredit, todos, loading, error, repos, store, reload }),
+    [habits, records, routines, skipCredit, todos, loading, error, repos, store, reload],
   );
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

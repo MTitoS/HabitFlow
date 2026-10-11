@@ -258,3 +258,86 @@ describe('records retroactive write (T1/R3)', () => {
     );
   });
 });
+
+describe('todo repository: CRUD + toggle', () => {
+  const now = 1746450000000;
+
+  async function setup() {
+    const store = createTestStore();
+    const repos = createRepositories(store);
+    return { store, repos };
+  }
+
+  it('create persists with timestamps and completed false', async () => {
+    const { store, repos } = await setup();
+    const created = await repos.todos.create({ title: 'Comprar leite' });
+    expect(created.title).toBe('Comprar leite');
+    expect(created.completed).toBe(false);
+    expect(created.completedAt).toBeUndefined();
+    expect(created.createdAt).toBeGreaterThan(0);
+    expect(created.updatedAt).toBeGreaterThan(0);
+    const all = await store.readTable('todos');
+    expect(all).toHaveLength(1);
+  });
+
+  it('separates dated and undated todos via byDate/undated', async () => {
+    const { repos } = await setup();
+    const dated = await repos.todos.create({ title: 'Com data', date: '2026-05-05' });
+    const undatedTodo = await repos.todos.create({ title: 'Algum dia' });
+    expect((await repos.todos.undated()).map((t) => t.id)).toEqual([undatedTodo.id]);
+    expect((await repos.todos.byDate('2026-05-05')).map((t) => t.id)).toEqual([dated.id]);
+    expect(await repos.todos.byDate('2026-05-06')).toHaveLength(0);
+  });
+
+  it('update replaces fields and bumps updatedAt', async () => {
+    const { repos } = await setup();
+    const created = await repos.todos.create({ title: 'Antigo' });
+    const updated = { ...created, title: 'Novo' };
+    await repos.todos.update(updated);
+    const loaded = (await repos.todos.all())[0];
+    expect(loaded.title).toBe('Novo');
+    expect(loaded.updatedAt).toBeGreaterThanOrEqual(created.updatedAt);
+  });
+
+  it('setCompleted writes completedAt = now', async () => {
+    const { repos } = await setup();
+    const created = await repos.todos.create({ title: 'X' });
+    await repos.todos.setCompleted(created.id, now);
+    const loaded = (await repos.todos.all())[0];
+    expect(loaded.completed).toBe(true);
+    expect(loaded.completedAt).toBe(now);
+  });
+
+  it('setCompleted is idempotent across the same todo (no duplication)', async () => {
+    const { repos, store } = await setup();
+    const created = await repos.todos.create({ title: 'X' });
+    await repos.todos.setCompleted(created.id, now);
+    await repos.todos.setCompleted(created.id, now);
+    expect(await store.readTable('todos')).toHaveLength(1);
+  });
+
+  it('setUncompleted removes completedAt (invariant c5.2)', async () => {
+    const { repos } = await setup();
+    const created = await repos.todos.create({ title: 'X' });
+    await repos.todos.setCompleted(created.id, now);
+    await repos.todos.setUncompleted(created.id);
+    const loaded = (await repos.todos.all())[0];
+    expect(loaded.completed).toBe(false);
+    expect(loaded.completedAt).toBeUndefined();
+  });
+
+  it('setCompleted works for a non-today date (Q9 — no temporal guard)', async () => {
+    const { repos } = await setup();
+    const created = await repos.todos.create({ title: 'X', date: '2026-05-09' });
+    await expect(repos.todos.setCompleted(created.id, now)).resolves.toBeUndefined();
+    const loaded = (await repos.todos.all())[0];
+    expect(loaded.completed).toBe(true);
+  });
+
+  it('remove deletes the todo', async () => {
+    const { repos, store } = await setup();
+    const created = await repos.todos.create({ title: 'X' });
+    await repos.todos.remove(created.id);
+    expect(await store.readTable('todos')).toHaveLength(0);
+  });
+});

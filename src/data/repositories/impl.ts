@@ -9,6 +9,7 @@ import {
 } from '@/domain/record/transitions';
 import { toDateKey } from '@/domain/date/dateUtils';
 import { createSkipCredit, SkipCredit } from '@/domain/skip-credit/grantWeeklyCredit';
+import { Todo } from '@/domain/todo/model';
 import { OPEN } from '@/config/opens';
 import {
   HabitRepository,
@@ -16,12 +17,14 @@ import {
   Repositories,
   RoutineRepository,
   SkipCreditRepository,
+  TodoRepository,
 } from '@/data/repositories/types';
 
 const T_HABITS = 'habits';
 const T_RECORDS = 'records';
 const T_ROUTINES = 'routines';
 const T_SKIP = 'skipcredit';
+const T_TODOS = 'todos';
 
 export function generateId(prefix: string): string {
   const rand = Math.random().toString(36).slice(2, 10);
@@ -278,11 +281,65 @@ function createSkipCreditRepository(store: DataStore): SkipCreditRepository {
   };
 }
 
+export function createTodoRepository(store: DataStore): TodoRepository {
+  return {
+    async all() {
+      return store.readTable<Todo>(T_TODOS);
+    },
+    async byDate(dateKey) {
+      const todos = await store.readTable<Todo>(T_TODOS);
+      return todos.filter((t) => t.date === dateKey);
+    },
+    async undated() {
+      const todos = await store.readTable<Todo>(T_TODOS);
+      return todos.filter((t) => !t.date);
+    },
+    async create(input) {
+      const now = Date.now();
+      const todo: Todo = { ...input, id: generateId('todo'), completed: false, createdAt: now, updatedAt: now };
+      const todos = await store.readTable<Todo>(T_TODOS);
+      await store.writeTable(T_TODOS, [...todos, todo]);
+      return todo;
+    },
+    async update(todo) {
+      const todos = await store.readTable<Todo>(T_TODOS);
+      const next = todos.map((t) => (t.id === todo.id ? { ...todo, updatedAt: Date.now() } : t));
+      await store.writeTable(T_TODOS, next);
+    },
+    async setCompleted(id, now) {
+      const todos = await store.readTable<Todo>(T_TODOS);
+      await store.writeTable(
+        T_TODOS,
+        todos.map((t) => (t.id === id ? { ...t, completed: true, completedAt: now, updatedAt: now } : t)),
+      );
+    },
+    async setUncompleted(id) {
+      const todos = await store.readTable<Todo>(T_TODOS);
+      await store.writeTable(
+        T_TODOS,
+        todos.map((t) => {
+          if (t.id !== id) return t;
+          const { completedAt, ...rest } = t;
+          return { ...rest, completed: false, completedAt: undefined, updatedAt: Date.now() };
+        }),
+      );
+    },
+    async remove(id) {
+      const todos = await store.readTable<Todo>(T_TODOS);
+      await store.writeTable(
+        T_TODOS,
+        todos.filter((t) => t.id !== id),
+      );
+    },
+  };
+}
+
 export function createRepositories(store: DataStore): Repositories {
   return {
     habits: createHabitRepository(store),
     records: createRecordRepository(store),
     routines: createRoutineRepository(store),
     skipCredit: createSkipCreditRepository(store),
+    todos: createTodoRepository(store),
   };
 }

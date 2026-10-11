@@ -1,6 +1,7 @@
 import { Habit, Routine } from '@/domain/habit/model';
 import { HabitRecord } from '@/domain/record/model';
 import { SkipCredit } from '@/domain/skip-credit/grantWeeklyCredit';
+import { Todo } from '@/domain/todo/model';
 
 export interface HabitRepository {
   all(): Promise<Habit[]>;
@@ -45,9 +46,23 @@ export interface SkipCreditRepository {
   reset(): Promise<void>;
 }
 
+export interface TodoRepository {
+  all(): Promise<Todo[]>;
+  byDate(dateKey: string): Promise<Todo[]>;
+  undated(): Promise<Todo[]>;
+  create(
+    input: Omit<Todo, 'id' | 'completed' | 'completedAt' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Todo>;
+  update(todo: Todo): Promise<void>;
+  setCompleted(id: string, now: number): Promise<void>;
+  setUncompleted(id: string): Promise<void>;
+  remove(id: string): Promise<void>;
+}
+
 export interface Repositories {
   habits: HabitRepository;
   records: RecordRepository;
   routines: RoutineRepository;
   skipCredit: SkipCreditRepository;
+  todos: TodoRepository;
 }

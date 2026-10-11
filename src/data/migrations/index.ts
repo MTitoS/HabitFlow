@@ -6,7 +6,9 @@ export type Migration = {
   up: (tables: Record<string, unknown[]>) => Record<string, unknown[]>;
 };
 
-export const MIGRATIONS: Migration[] = [];
+export const MIGRATIONS: Migration[] = [
+  { from: 1, to: 2, up: (tables) => ({ ...tables, todos: tables.todos ?? [] }) },
+];
 
 export function applyMigrations(tables: Record<string, unknown[]>, fromVersion: number): Record<string, unknown[]> {
   let current = { ...tables };
