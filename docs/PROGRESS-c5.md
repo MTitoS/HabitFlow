@@ -105,7 +105,15 @@
 - Gate: `npx jest exportImport|integration` verde; `npx jest` (343) verde; tsc limpo.
 
 ## FASE F7 — Verificação + release
-_pendente (D13→D14→D15)_
+
+### D13 — Verificação final DoD + regressão (C5 completo) — ✅
+- `npx jest` **343 / 54 suites** (baseline 281/42, sem regressão); `tsc`/`lint`/web export limpos.
+- Checklist SPEC-c5 §11 integralmente atendido; `docs/REVIEW-c5.md` (verdict **APPROVED**).
+- Codebase Memory re-index 1× → **2090 nós / 5571 edges** (delta c5 ≈ **+260 / +707**).
+- Arquivos protegidos (`records`/`opens.ts`/charts/`WeekStatusRow`/adapters/`theme`): **0 diff**.
+
+### D14 — Release v0.3.0 (vc15) — _em andamento_
+### D15 — (parte do release: PROGRESS final)
 
 ## Contagem acumulada
 | Marco | Testes | Suites |
@@ -116,3 +124,4 @@ _pendente (D13→D14→D15)_
 | Após F4 (D9) | 331 | 49 |
 | Após F5 (D10–D11) | 340 | 52 |
 | Após F6 (D12) | 343 | 53 |
+| Após D13 (final) | 343 | 54 |
