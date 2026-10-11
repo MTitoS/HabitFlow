@@ -68,7 +68,15 @@
 - Gate: `npx jest todo-form|todo-screens` verde; tsc/lint limpos; web export ok.
 
 ## FASE F4 — Hoje
-_pendente (D9)
+
+### D9 — Tarefas de hoje na Home (`TodayTodos`) — ✅
+- `src/components/feature/TodayTodos.tsx`: seleciona `todosForDay` (date===hoje) ∪ atrasados não
+  concluídos (`isOverdue`), renderiza `TodoRow`s marcáveis, oculto se vazio; sem quick-add (Q16).
+- `src/app/index.tsx`: `todos` do `useData()` + `toggleTodo` (setCompleted/setUncompleted + toast +
+  `triggerSuccess`, sem celebração) + `<TodayTodos>` **após os grupos de hábitos, antes da linha de
+  créditos** (Q15).
+- Testes: TodayTodos.test.tsx novo +4 (só hoje+atrasado aberto; riscado/atrasada; toggle; vazio).
+- Gate: `npx jest TodayTodos` verde; `npx jest` (331) verde; tsc/lint limpos.
 
 ## FASE F5 — Estatísticas + remoção Calendário
 _pendente (D10→D11)_
@@ -85,3 +93,4 @@ _pendente (D13→D14→D15)_
 | Baseline (v0.2.3-c4fix) | 281 | 42 |
 | Após F1+F2 (D1–D4) | 304 | 44 |
 | Após F3 (D5–D8) | 327 | ~47 |
+| Após F4 (D9) | 331 | 49 |

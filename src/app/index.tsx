@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { AppScaffold } from '@/components/layout/AppScaffold';
 import { TodayProgress } from '@/components/feature/TodayProgress';
 import { HabitRow } from '@/components/feature/HabitRow';
+import { TodayTodos } from '@/components/feature/TodayTodos';
 import { HomeStreakHeader } from '@/components/feature/HomeStreakHeader';
 import { CheckboxState } from '@/components/feature/HabitCheckbox';
 import { EmptyState, ErrorState } from '@/components/feature/EmptyState';
@@ -45,7 +46,7 @@ export default function TodayScreen() {
 
 function TodayBody() {
   const theme = useTheme();
-  const { habits, records, routines, skipCredit, loading, error, repos, reload } = useData();
+  const { habits, records, routines, skipCredit, todos, loading, error, repos, reload } = useData();
   const { showToast } = useToast();
   const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
   const [celebration, setCelebration] = useState<
@@ -135,6 +136,23 @@ function TodayBody() {
     showToast('skip', `${habit.name} pulado (crédito ${result.state.balance} restante)`);
   };
 
+  const toggleTodo = async (id: string) => {
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+    try {
+      if (todo.completed) {
+        await repos.todos.setUncompleted(id);
+        showToast('info', 'Tarefa marcada como não concluída');
+      } else {
+        await repos.todos.setCompleted(id, new Date().getTime());
+        await triggerSuccess();
+        showToast('success', 'Tarefa concluída');
+      }
+    } catch {
+      showToast('error', 'Não foi possível atualizar agora');
+    }
+  };
+
   const undoSkipHabit = async (habit: Habit) => {
     if (!skipCredit) return;
     const now = new Date();
@@ -211,6 +229,8 @@ function TodayBody() {
           </View>
         ))
       )}
+
+      <TodayTodos todos={todos} today={today} onToggle={(id) => void toggleTodo(id)} />
 
       <View style={styles.creditRow}>
         <RNText style={{ color: theme.color('textMuted'), fontSize: 12 }}>
