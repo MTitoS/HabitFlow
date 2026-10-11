@@ -18,6 +18,7 @@ jest.mock('lucide-react-native', () => {
     __esModule: true,
     Plus: icon('Plus'),
     Flame: icon('Flame'),
+    SquareCheckBig: icon('SquareCheckBig'),
   };
 });
 
@@ -44,5 +45,11 @@ describe('Icon with real lucide shape (forwardRef object)', () => {
   it('falls back to emoji for unknown names', async () => {
     const { getByTestId } = await renderIcon('🦄');
     expect(getByTestId('habit-icon-emoji')).toBeTruthy();
+  });
+
+  it('renders the squareCheck glyph from lucide (D5)', async () => {
+    const { getByTestId, queryByTestId } = await renderIcon('squareCheck');
+    expect(getByTestId('habit-icon')).toBeTruthy();
+    expect(queryByTestId('habit-icon-emoji')).toBeNull();
   });
 });

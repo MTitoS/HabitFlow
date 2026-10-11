@@ -35,10 +35,40 @@
 - Gate: `npx jest dataProvider|integration` verde; tsc limpo.
 
 ## FASE F3 — UI da aba Tarefas
-_pendente (D5→D6→D7→D8)_
+
+### D5 — Glifo `squareCheck` + `EmptyState` `'no-todos'` — ✅
+- `Icon.tsx`: `SquareCheckBig` (lucide) em `GLYPHS.squareCheck` (Q3). `EmptyState`: `kind: 'no-todos'`
+  (🗒️ "Sem tarefas" / "Crie uma tarefa para organizar o dia.", action "Criar tarefa") — zero token novo.
+- Testes: Icon.test.tsx +1 (glyph renderiza); EmptyState.test.tsx novo +2 (cópia + action).
+- Gate: `npx jest EmptyState Icon.test` verde; tsc limpo.
+
+### D6 — `TodoRow` — ✅
+- `src/components/feature/TodoRow.tsx`: checkbox com `accessibilityRole="checkbox"` + label
+  "Marcar X como concluída"/"X: concluída", título riscado quando concluído (não-só-cor),
+  badge "atrasada" (token `danger`) quando `overdue` e aberto, `testID todo-row-<id>`,
+  affordance de edição opcional.
+- Testes: TodoRow.test.tsx novo +6 (labels, riscado, toggle, overdue, testID, edit).
+- Gate: `npx jest TodoRow` verde; tsc limpo.
+
+### D7 — Tela da aba `src/app/todos/index.tsx` + NavItems — ✅
+- Rota nova com `AppScaffold title="Tarefas"` + action "Nova tarefa"; seções `Hoje`/`Algum dia`/
+  `Próximas` (só quando existir) via `groupedByDay`+`sortTodos`; toggle → `setCompleted/setUncompleted`
+  + `triggerSuccess` + toast (Q20, sem achievement); `onPress` → `/todos/<id>/edit`; empty → no-todos.
+- `NavItems`: Calendário → `{href:'/todos', label:'Tarefas', icon:'squareCheck', match:'/todos'}` 4ª posição, 5 abas (Q2).
+- Testes: todos-screen.test.tsx novo +5 (ordem seções, toggle complete/reopen, empty, navigation);
+  NavItems.test.tsx novo +1.
+- Gate: `npx jest todos-screen NavItems` verde; **web export** `/todos` ok.
+
+### D8 — Form + telas create/edit — ✅
+- `features/todo/todo-form.tsx`: título (Input) + `DatePicker` opcional + "Remover data (vira Algum dia)";
+  valida `validateTodoTitle`.
+- `app/todos/create.tsx` + `app/todos/[id]/edit.tsx`: save/update + toast + back; **excluir com
+  `Alert`** (Q13).
+- Testes: todo-form.test.tsx +5; todo-screens.test.tsx +3 (create/envio; edit; delete confirm).
+- Gate: `npx jest todo-form|todo-screens` verde; tsc/lint limpos; web export ok.
 
 ## FASE F4 — Hoje
-_pendente (D9)_
+_pendente (D9)
 
 ## FASE F5 — Estatísticas + remoção Calendário
 _pendente (D10→D11)_
@@ -54,3 +84,4 @@ _pendente (D13→D14→D15)_
 |---|---|---|
 | Baseline (v0.2.3-c4fix) | 281 | 42 |
 | Após F1+F2 (D1–D4) | 304 | 44 |
+| Após F3 (D5–D8) | 327 | ~47 |
