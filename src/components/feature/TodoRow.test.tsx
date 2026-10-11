@@ -51,4 +51,13 @@ describe('TodoRow', () => {
     await fireEvent.press(getByRole('button', { name: 'Editar Comprar leite' }));
     expect(onPress).toHaveBeenCalledWith('t1');
   });
+
+  it('keeps the edit affordance tappable (min 44x44) and visibly sized (icon >= 20)', async () => {
+    const { getByRole, getByText, onPress } = await renderRow({ onPress: (id) => onPress(id) });
+    const edit = getByRole('button', { name: 'Editar Comprar leite' });
+    expect(edit).toHaveStyle({ minWidth: 44, minHeight: 44 });
+    expect(getByText('›')).toHaveStyle({ fontSize: 22 });
+    await fireEvent.press(edit);
+    expect(onPress).toHaveBeenCalledWith('t1');
+  });
 });

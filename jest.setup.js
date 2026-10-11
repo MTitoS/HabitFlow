@@ -40,3 +40,19 @@ jest.mock('lucide-react-native', () => {
     },
   });
 });
+
+jest.mock('@expo/ui/community/datetime-picker', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  const registry = {};
+  function MockDateTimePicker(props) {
+    registry.lastProps = props;
+    return React.createElement(View, { testID: props?.testID ?? 'todo-date-picker' });
+  }
+  return {
+    __esModule: true,
+    default: MockDateTimePicker,
+    DateTimePicker: MockDateTimePicker,
+    __test: { registry },
+  };
+});

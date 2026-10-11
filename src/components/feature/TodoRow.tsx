@@ -68,7 +68,7 @@ export function TodoRow({ todo, checked, onToggle, onPress, overdue = false }: P
           hitSlop={6}
           style={styles.edit}
         >
-          <RNText style={{ color: theme.color('textMuted'), fontSize: 20 }}>›</RNText>
+          <RNText style={{ color: theme.color('textMuted'), fontSize: 22 }}>›</RNText>
         </Pressable>
       ) : null}
     </View>
@@ -117,6 +117,9 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   edit: {
-    padding: spacing.xs,
+    minWidth: 44,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

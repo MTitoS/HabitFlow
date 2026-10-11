@@ -84,3 +84,23 @@ export function isInPast(dateKey: string, today: string): boolean {
 export function compareDateKeys(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
 }
+
+const MONTHS_PT_BR = [
+  'jan.',
+  'fev.',
+  'mar.',
+  'abr.',
+  'mai.',
+  'jun.',
+  'jul.',
+  'ago.',
+  'set.',
+  'out.',
+  'nov.',
+  'dez.',
+];
+
+export function formatDateKeyPtBR(dateKey: string): string {
+  const d = parseDateKey(dateKey);
+  return `${pad2(d.getDate())} de ${MONTHS_PT_BR[d.getMonth()]} de ${d.getFullYear()}`;
+}

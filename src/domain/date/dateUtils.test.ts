@@ -1,6 +1,7 @@
 import {
   addDays,
   daysInMonth,
+  formatDateKeyPtBR,
   monthStartOf,
   parseDateKey,
   startOfWeek,
@@ -49,5 +50,10 @@ describe('dateUtils', () => {
 
   it('monthStartOf keeps month prefix', () => {
     expect(monthStartOf('2026-05-06')).toBe('2026-05-01');
+  });
+
+  it('formatDateKeyPtBR formats in pt-BR with padded day', () => {
+    expect(formatDateKeyPtBR('2026-05-05')).toBe('05 de mai. de 2026');
+    expect(formatDateKeyPtBR('2026-12-25')).toBe('25 de dez. de 2026');
   });
 });

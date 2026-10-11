@@ -1,9 +1,20 @@
-import { fireEvent } from '@testing-library/react-native';
+import { act, fireEvent, RenderResult } from '@testing-library/react-native';
 import { renderWithProviders } from '@/components/ui/renderUtils';
 import { TodoForm } from '@/features/todo/todo-form';
 import { Todo } from '@/domain/todo/model';
+import * as NativePicker from '@expo/ui/community/datetime-picker';
 
-jest.mock('@/domain/date/dateUtils', () => ({ toDateKey: () => '2026-05-05' }));
+const pickerRegistry = (NativePicker as unknown as { __test: { registry: Record<string, unknown> } })
+  .__test.registry;
+
+async function pickDate(getByRole: RenderResult['getByRole'], date: Date) {
+  await fireEvent.press(getByRole('button', { name: 'Data (opcional)' }));
+  const onValueChange = (pickerRegistry.lastProps as { onValueChange: (e: unknown, d: Date) => void })
+    .onValueChange;
+  await act(async () => {
+    onValueChange({ nativeEvent: { timestamp: date.getTime(), utcOffset: 0 } }, date);
+  });
+}
 
 async function renderForm(over: Partial<React.ComponentProps<typeof TodoForm>> = {}) {
   const onSubmit = jest.fn(async () => {});
@@ -13,7 +24,7 @@ async function renderForm(over: Partial<React.ComponentProps<typeof TodoForm>> =
 
 const DRAFT_LABEL = 'Salvar tarefa';
 
-describe('TodoForm (D8)', () => {
+describe('TodoForm (D8 / c5fix1)', () => {
   it('does not submit an empty title (validation)', async () => {
     const { getByRole, onSubmit } = await renderForm();
     await fireEvent.press(getByRole('button', { name: DRAFT_LABEL }));
@@ -21,10 +32,10 @@ describe('TodoForm (D8)', () => {
     expect(getByRole('button', { name: DRAFT_LABEL })).toBeTruthy();
   });
 
-  it('submits a dated todo', async () => {
+  it('submits a dated todo picked from the calendar', async () => {
     const { getByLabelText, getByRole, onSubmit } = await renderForm();
     await fireEvent.changeText(getByLabelText('Título'), 'Comprar leite');
-    await fireEvent.press(getByRole('radio', { name: '2026-05-05' }));
+    await pickDate(getByRole, new Date(2026, 4, 5));
     await fireEvent.press(getByRole('button', { name: DRAFT_LABEL }));
     expect(onSubmit).toHaveBeenCalledWith({ title: 'Comprar leite', date: '2026-05-05' });
   });
@@ -39,7 +50,7 @@ describe('TodoForm (D8)', () => {
   it('removes the chosen date back to "Algum dia"', async () => {
     const { getByLabelText, getByRole, onSubmit } = await renderForm();
     await fireEvent.changeText(getByLabelText('Título'), 'Comprar leite');
-    await fireEvent.press(getByRole('radio', { name: '2026-05-05' }));
+    await pickDate(getByRole, new Date(2026, 4, 5));
     await fireEvent.press(getByRole('button', { name: 'Remover data' }));
     await fireEvent.press(getByRole('button', { name: DRAFT_LABEL }));
     expect(onSubmit).toHaveBeenCalledWith({ title: 'Comprar leite', date: undefined });
@@ -51,5 +62,20 @@ describe('TodoForm (D8)', () => {
     await fireEvent.changeText(getByLabelText('Título'), 'Lavar moto');
     await fireEvent.press(getByRole('button', { name: DRAFT_LABEL }));
     expect(onSubmit).toHaveBeenCalledWith({ title: 'Lavar moto', date: undefined });
+  });
+
+  it('keeps the initial date when editing and saving', async () => {
+    const initial: Todo = {
+      id: 't1',
+      title: 'Lavar carro',
+      date: '2026-05-05',
+      completed: false,
+      createdAt: 1,
+      updatedAt: 1,
+    };
+    const { getByText, getByRole, onSubmit } = await renderForm({ initial });
+    getByText('05 de mai. de 2026');
+    await fireEvent.press(getByRole('button', { name: DRAFT_LABEL }));
+    expect(onSubmit).toHaveBeenCalledWith({ title: 'Lavar carro', date: '2026-05-05' });
   });
 });
