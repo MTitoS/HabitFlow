@@ -96,7 +96,13 @@
 - Gate: `npx jest` (340) verde; web export sem rota `/calendar`.
 
 ## FASE F6 — Export/import + isolamento
-_pendente (D12)_
+
+### D12 — Roundtrip `todos` + não-contaminação de stats (Q21/L7) — ✅
+- **Sem código de produção** (export/import genérico já cobre `todos`).
+- Testes: exportImport.test.ts +2 (roundtrip com `todos` — inclusive `completedAt`; backup v1 legado
+  importa e materializa `todos: []`); integration.test.ts +1 (L7: `daySummary`/`computeOverallStreaks`/
+  `monthDayStatus` idênticos antes/depois de criar+concluir to-dos).
+- Gate: `npx jest exportImport|integration` verde; `npx jest` (343) verde; tsc limpo.
 
 ## FASE F7 — Verificação + release
 _pendente (D13→D14→D15)_
@@ -109,3 +115,4 @@ _pendente (D13→D14→D15)_
 | Após F3 (D5–D8) | 327 | ~47 |
 | Após F4 (D9) | 331 | 49 |
 | Após F5 (D10–D11) | 340 | 52 |
+| Após F6 (D12) | 343 | 53 |

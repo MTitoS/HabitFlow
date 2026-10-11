@@ -3,6 +3,8 @@ import { createRepositories } from '@/data/repositories/impl';
 import { grantWeeklyCredit } from '@/domain/skip-credit/grantWeeklyCredit';
 import { useSkip } from '@/domain/skip-credit/useSkip';
 import { computeStreaks } from '@/domain/streak/currentStreak';
+import { computeOverallStreaks, monthDayStatus } from '@/domain/streak/overallStreak';
+import { daySummary } from '@/domain/stats/aggregate';
 
 describe('integration: full persistence flow', () => {
   const now = new Date(2026, 4, 5, 10, 0, 0);
@@ -79,5 +81,39 @@ describe('integration: full persistence flow', () => {
     const loaded = await repoB.habits.byId(habit.id);
     expect(loaded?.name).toBe('Água');
     expect(loaded?.targetValue).toBe(8);
+  });
+});
+
+describe('todos isolation from stats (L7/D12)', () => {
+  it('never changes daySummary / overallStreaks / monthDayStatus', async () => {
+    const now = new Date(2026, 4, 5, 10, 0, 0);
+    const store = createTestStore();
+    const repos = createRepositories(store);
+    const habit = await repos.habits.create({
+      name: 'Ler',
+      icon: 'book',
+      color: 'primary',
+      type: 'binary',
+      frequency: { kind: 'daily', schedule: {} },
+    });
+    await repos.records.setCompleted(habit.id, '2026-05-05', now);
+
+    const records = await repos.records.all();
+    const before = {
+      streaks: computeOverallStreaks([habit], records, now),
+      month: monthDayStatus([habit], records, now),
+      summary: daySummary([habit], records, now),
+    };
+
+    const todo = await repos.todos.create({ title: 'Comprar leite', date: '2026-05-05' });
+    await repos.todos.setCompleted(todo.id, now.getTime());
+
+    const after = {
+      streaks: computeOverallStreaks([habit], records, now),
+      month: monthDayStatus([habit], records, now),
+      summary: daySummary([habit], records, now),
+    };
+
+    expect(after).toEqual(before);
   });
 });

@@ -64,4 +64,35 @@ describe('export import', () => {
     const migrated = applyMigrations({ todos: [{ id: 't1' }] }, 2);
     expect(migrated.todos).toEqual([{ id: 't1' }]);
   });
+
+  it('roundtrips todos through export/import (Q21/C5-8)', async () => {
+    const storeA = createTestStore();
+    const reposA = createRepositories(storeA);
+    await reposA.todos.create({ title: 'Comprar leite', date: '2026-05-05' });
+    const someday = await reposA.todos.create({ title: 'Algum dia' });
+    await reposA.todos.setCompleted(someday.id, 123456);
+
+    const json = JSON.stringify(buildExport(storeA));
+    const storeB = createTestStore();
+    await importPayload(storeB, json);
+
+    const todosB = await storeB.readTable<{ id: string; title: string; completed?: boolean; completedAt?: number }>('todos');
+    expect(todosB).toHaveLength(2);
+    expect(todosB.map((t) => t.title).sort()).toEqual(['Algum dia', 'Comprar leite']);
+    const restored = todosB.find((t) => t.id === someday.id);
+    expect(restored?.completed).toBe(true);
+    expect(restored?.completedAt).toBe(123456);
+  });
+
+  it('imports a v1 legacy backup and materializes an empty todos table (Q21)', async () => {
+    const store = createTestStore();
+    const legacy = JSON.stringify({
+      version: 1,
+      exportedAt: '2026-01-01',
+      tables: { habits: [], records: [], routines: [], skipcredit: [] },
+    });
+    const payload = await importPayload(store, legacy);
+    expect(payload.tables.todos).toEqual([]);
+    expect(store.snapshotTables().todos).toEqual([]);
+  });
 });
