@@ -112,8 +112,22 @@
 - Codebase Memory re-index 1× → **2090 nós / 5571 edges** (delta c5 ≈ **+260 / +707**).
 - Arquivos protegidos (`records`/`opens.ts`/charts/`WeekStatusRow`/adapters/`theme`): **0 diff**.
 
-### D14 — Release v0.3.0 (vc15) — _em andamento_
-### D15 — (parte do release: PROGRESS final)
+### D14 — Release v0.3.0 (vc15) — ✅
+- Bump `versionCode 15` / `versionName "3.0.0"` (`app.json` + `android/app/build.gradle`); regras do
+  `build.gradle` (signing/minify/abiFilters) **intocadas**.
+- APK release arm64: **34.8 MB** (36,473,530 bytes, < 50 MB); `./gradlew assembleRelease` **BUILD
+  SUCCESSFUL** (2m22s). Fonte `android/.../app-release.apk` → `HabitFlow-arm64.apk`.
+- Tag **`v0.3.0-vc15`** + GitHub release "C5 - Aba Tarefas + detalhe do dia em Estatisticas"; asset
+  `HabitFlow-arm64.apk`; download **anônimo HTTP 200** (`content-length 36473530`); releases antigas
+  preservadas.
+- `git push origin main` (`fe8b4eb..e446380`).
+
+### D15 — Encerramento — ✅
+- `docs/PROGRESS-c5.md` completo (contagens D1–D14); `docs/REVIEW-c5.md` (APPROVED).
+
+## Device
+- Verify device (`adb`): **deferred/SKIP** (não bloqueante) — mitigado por web export dist + build
+  release arm64 + download anônimo HTTP 200, conforme ciclos c4fix/e1.
 
 ## Contagem acumulada
 | Marco | Testes | Suites |
@@ -124,4 +138,4 @@
 | Após F4 (D9) | 331 | 49 |
 | Após F5 (D10–D11) | 340 | 52 |
 | Após F6 (D12) | 343 | 53 |
-| Após D13 (final) | 343 | 54 |
+| Final (D13–D15) | 343 | 54 |
