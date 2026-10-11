@@ -1,3 +1,4 @@
+import { fireEvent } from '@testing-library/react-native';
 import { renderWithProviders } from '@/components/ui/renderUtils';
 import { MonthView } from '@/components/feature/dashboard/MonthView';
 import { DayPoint } from '@/domain/stats/aggregate';
@@ -60,5 +61,21 @@ describe('MonthView', () => {
     );
     getByLabelText('2026-05-01: Vencido');
     getByLabelText('2026-05-03: Parcial');
+  });
+
+  it('fires onSelectDay when a day is pressed (D10)', async () => {
+    const onSelectDay = jest.fn();
+    const { getByLabelText } = await renderWithProviders(
+      <MonthView series={monthSeries()} statuses={STATUSES} streakCurrent={0} onSelectDay={onSelectDay} />,
+    );
+    await fireEvent.press(getByLabelText('2026-05-01: Vencido'));
+    expect(onSelectDay).toHaveBeenCalledWith('2026-05-01');
+  });
+
+  it('stays render-only without onSelectDay (retro-compat fixture)', async () => {
+    const { queryByRole } = await renderWithProviders(
+      <MonthView series={monthSeries()} statuses={STATUSES} streakCurrent={0} />,
+    );
+    expect(queryByRole('button', { name: '2026-05-01: Vencido' })).toBeNull();
   });
 });

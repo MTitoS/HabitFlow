@@ -1,4 +1,4 @@
-import { StyleSheet, Text as RNText, View } from 'react-native';
+import { Pressable, StyleSheet, Text as RNText, View } from 'react-native';
 import { useTheme, AppTheme } from '@/theme/Provider';
 import { spacing } from '@/theme/spacing';
 import { radius } from '@/theme/radius';
@@ -24,9 +24,10 @@ interface Props {
   series: DayPoint[];
   statuses: { dateKey: string; state: MonthDayState }[];
   streakCurrent: number;
+  onSelectDay?: (dateKey: string) => void;
 }
 
-export function MonthView({ series, statuses, streakCurrent }: Props) {
+export function MonthView({ series, statuses, streakCurrent, onSelectDay }: Props) {
   const theme = useTheme();
   const statusByDate = new Map(statuses.map((s) => [s.dateKey, s.state]));
 
@@ -68,14 +69,23 @@ export function MonthView({ series, statuses, streakCurrent }: Props) {
           if (!dateKey) return <View key={`pad-${index}`} style={styles.cell} />;
           const state = statusByDate.get(dateKey) ?? 'neutral';
           const meta = stateMeta(state, theme);
+          const dayLabel = `${dateKey}: ${meta.label}`;
           return (
             <View key={dateKey} style={styles.cell}>
-              <View
-                accessibilityLabel={`${dateKey}: ${meta.label}`}
-                style={[styles.day, { backgroundColor: meta.bg }]}
-              >
-                <RNText style={{ color: meta.fg, fontSize: 11, fontWeight: '600' }}>{meta.symbol}</RNText>
-              </View>
+              {onSelectDay ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={dayLabel}
+                  onPress={() => onSelectDay(dateKey)}
+                  style={[styles.day, { backgroundColor: meta.bg }]}
+                >
+                  <RNText style={{ color: meta.fg, fontSize: 11, fontWeight: '600' }}>{meta.symbol}</RNText>
+                </Pressable>
+              ) : (
+                <View accessibilityLabel={dayLabel} style={[styles.day, { backgroundColor: meta.bg }]}>
+                  <RNText style={{ color: meta.fg, fontSize: 11, fontWeight: '600' }}>{meta.symbol}</RNText>
+                </View>
+              )}
             </View>
           );
         })}

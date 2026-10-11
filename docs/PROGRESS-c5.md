@@ -79,7 +79,21 @@
 - Gate: `npx jest TodayTodos` verde; `npx jest` (331) verde; tsc/lint limpos.
 
 ## FASE F5 — Estatísticas + remoção Calendário
-_pendente (D10→D11)_
+
+### D10 — Mês interativo + detalhe inline (Q17/Q18/Q19) — ✅
+- `MonthView`: prop opcional `onSelectDay`; dias viram `Pressable` (role button) só quando fornecida
+  (retro-compat preservada). Reuso de `calendarDayInfo`/`monthDayStatus`.
+- Novo `CalendarDetail`: status por hábito **read-only** (`statusForView`, ✓/—/✕/○) + to-dos do dia
+  via `TodoRow` **marcáveis** (Q19/L6) + fechar.
+- `statistics/index.tsx`: `selectedDay` + `toggleTodo` (toast+haptics, sem celebrations) +
+  `<CalendarDetail>` **inline** abaixo do mês (Q17).
+- Testes: MonthView.test.tsx +2; CalendarDetail.test.tsx novo +4; statistics-detail.test.tsx +1.
+- Gate: tsc/lint/web limpos.
+
+### D11 — Remover aba/rota Calendário (C5-9) — ✅
+- Deletado `src/app/calendar/index.tsx`; `NavItems` já aponta `/todos` (D7).
+- Teste: calendar-removed.test.ts novo +2 (arquivo ausente; zero órfãos de `app/calendar`/`/calendar`).
+- Gate: `npx jest` (340) verde; web export sem rota `/calendar`.
 
 ## FASE F6 — Export/import + isolamento
 _pendente (D12)_
@@ -94,3 +108,4 @@ _pendente (D13→D14→D15)_
 | Após F1+F2 (D1–D4) | 304 | 44 |
 | Após F3 (D5–D8) | 327 | ~47 |
 | Após F4 (D9) | 331 | 49 |
+| Após F5 (D10–D11) | 340 | 52 |
