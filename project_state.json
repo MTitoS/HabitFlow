@@ -1,7 +1,7 @@
 {
   "project": "habitflow",
-  "state": 3,
-  "state_name": "implementation-c5",
+  "state": 5,
+  "state_name": "knowledge-capture-c5",
   "phase": "F-tarefas-navegacao",
   "approved_gates": [
     {
@@ -73,6 +73,16 @@
       "state": 2,
       "approved_at": "2026-10-11T12:00:00-03:00",
       "note": "c5: Tito aprovou PLAN-c5 (15 tasks D1-D15), sem checkpoint visual - executa ate release v0.3.0 vc15"
+    },
+    {
+      "state": 4,
+      "approved_at": "2026-10-11T14:00:00-03:00",
+      "note": "c5: Tito aprovou ship v0.3.1 (c5fix1) + validou in-app; c5fix2 (v0.3.2) fix fuso publicado"
+    },
+    {
+      "state": 4,
+      "approved_at": "2026-10-11T14:05:00-03:00",
+      "note": "c5: Tito aprovou ciclo c5 completo (telegram)"
     }
   ],
   "rug_retries_used": 0,
@@ -82,14 +92,16 @@
     "spec": "docs/SPEC-c5.md",
     "plan": "docs/PLAN-c5.md",
     "review": "docs/REVIEW.md",
-    "learnings": "docs/learnings.md"
+    "learnings": "docs/learnings.md",
+    "mission": "docs/MISSION_c5_state3.md"
   },
   "opencode_session": null,
-  "updated_at": "2026-10-11T12:05:00-03:00",
+  "updated_at": "2026-10-11T14:10:00-03:00",
   "prior_phase": {
     "phase": "E-day-status-unification",
     "state_reached": 5,
-    "completed_at": "2026-10-11T00:00:00-03:00",
-    "summary": "e1 concluido (E1-E5): semantica unificada do day-cell, dia vencido + skip no calendario global — v2.3.0 vc14"
-  }
+    "completed_at": "2026-10-11T14:00:00-03:00",
+    "summary": "c5 concluido (D1-D15 + c5fix1 + c5fix2): aba Tarefas, detalhe dia em Estatisticas, date picker nativo, fix fuso — v0.3.2 vc17"
+  },
+  "bg_pid": null
 }
